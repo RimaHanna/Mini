@@ -1,34 +1,20 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: rmouhoub <rmouhoub@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/08/25 17:11:56 by rmouhoub          #+#    #+#              #
-#    Updated: 2023/08/25 18:27:42 by rmouhoub         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
-C = cc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 LINK = -I./includes
-VPATH = srcs srcs/mandatory srcs/mandatory/exec srcs/mandatory/parser\
-		srcs/mandatory/main srcs/mandatory/utils
+VPATH = srcs srcs/mandatory\
+		srcs/mandatory/parser srcs/mandatory/utils
 RM = rm -rf
 LIBFT = ./libft/libft.a
 
-MAIN = main
-EXEC = 
-PARSE = remove_quotes
-UTILS = is_instr
+UTILS = ft_strncpy is_instr
+PARSER = remove_quotes
 
 NAME = minishell
-SRCS =	$(addsuffix .c, $(MAIN))\
-		$(addsuffix .c, $(UTILS))\
+SRCS =	$(addsuffix .c, $(UTILS))\
 		$(addsuffix .c, $(PARSER))\
-			
-OBJ_DIR = objs
+		main.c
+		
+OBJ_DIR = obj
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
 all: $(NAME)

@@ -1,5 +1,4 @@
-#include <minishell.h>
-
+#include "minishell.h"
 
 /*
     Function that will return the size of the string without the quotes
