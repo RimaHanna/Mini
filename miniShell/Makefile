@@ -13,17 +13,21 @@
 C = cc
 CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 LINK = -I./includes
-VPATH = srcs srcs/mandatory srcs/mandatory/exec srcs/mandatory/parse
+VPATH = srcs srcs/mandatory srcs/mandatory/exec srcs/mandatory/parser\
+		srcs/mandatory/main srcs/mandatory/utils
 RM = rm -rf
 LIBFT = ./libft/libft.a
 
-EXEC = exec
-PARSE = cd
+MAIN = main
+EXEC = 
+PARSE = remove_quotes
+UTILS = is_instr
 
 NAME = minishell
-SRCS =	$(addsuffix .c, $(EXEC))\
-
-		
+SRCS =	$(addsuffix .c, $(MAIN))\
+		$(addsuffix .c, $(UTILS))\
+		$(addsuffix .c, $(PARSER))\
+			
 OBJ_DIR = objs
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 

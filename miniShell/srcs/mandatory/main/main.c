@@ -22,26 +22,6 @@ int global_status = 0;
 */
 
 
-// UTILS or LIBFT
-char	*ft_strncpy(char *dest, const char *src, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (src[i] && i < n)
-	{
-		dest[i] = src[i];
-		i += 1;
-	}
-	if (src[i] && i < n)
-	{
-		while (i < n)
-			dest[i++] = '\0';
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
 /*
 	trim characters specified in the set parameter from the beginning
 	and end of a string s1
@@ -123,6 +103,28 @@ int	unclosed_quote(char *str)
 		return (0);
 } 
 
+bool	unexpected_token(char token)
+{
+	ft_putstr_fd(UNEXPECTED_TOKEN, STDERR_FILENO);
+	ft_putchar_fd(token, STDERR_FILENO);
+	ft_putendl_fd("'", STDERR_FILENO);
+	return (true);
+}
+
+// Check for invalid syntax in the input string.
+/*
+	This function examines the provided input string for various cases of
+	invalid syntax. It checks for unexpected tokens at the beginning or end
+	of the input, as well as for improper use of redirection operators. 
+*/
+bool	invalid_syntax(char *line)
+{
+	if ((line[0] == PIPE) || (line[ft_strlen(line) - 1] == PIPE))
+		return (unexpected_token(PIPE));
+	if (is_instr(REDIRECTS, line[ft_strlen(line) - 1]))
+		return (unexpected_token(line[ft_strlen(line) - 1]));
+	return (false);	
+}
 /*
 	This function checks the validity of user input in a shell program.
 	It examines the input for empty strings, unclosed quotes, or syntax errors.
@@ -147,7 +149,7 @@ int	unclosed_quote(char *str)
 			ft_putendl_fd(SYNTAX_ERROR, STDERR_FILENO);
 			valid = false;
 		}
-		if (valid == false)
+		if (!valid)
 		{
 			free(line);
 			global_status = UNVALID_LINE;
@@ -196,3 +198,6 @@ int main (int argc, char *argv[], char **env)
     shell_loop();
     return (1);
 }
+
+
+// I SHOULD TEST THE INVLAID SYNTAX
