@@ -15,14 +15,6 @@
 int global_status = 0;
 
 /*
-	PREDEFINED MACROS FOR FD
-	STDIN_FILENO // return 0 // standard input stream
-	STDERR_FILENO // return 2 // standard error stream
-	STDOUT_FILENO // return 1 // standard output stream
-*/
-
-
-/*
 	trim characters specified in the set parameter from the beginning
 	and end of a string s1
 */
@@ -81,82 +73,6 @@ void	check_null_line(char *line)
 	}
 }
 
-int	unclosed_quote(char *str)
-{
-	char	last_opened;
-	
-	last_opened = 0;
-	while (*str)
-	{
-		if (*str == '\'' || *str == '"')
-		{
-			if (last_opened == 0)
-				last_opened = *str;
-			else if (*str == last_opened)
-				last_opened = 0;
-		}
-		str++;
-	}
-	if (last_opened)
-		return (1);
-	else
-		return (0);
-} 
-
-bool	unexpected_token(char token)
-{
-	ft_putstr_fd(UNEXPECTED_TOKEN, STDERR_FILENO);
-	ft_putchar_fd(token, STDERR_FILENO);
-	ft_putendl_fd("'", STDERR_FILENO);
-	return (true);
-}
-
-// Check for invalid syntax in the input string.
-/*
-	This function examines the provided input string for various cases of
-	invalid syntax. It checks for unexpected tokens at the beginning or end
-	of the input, as well as for improper use of redirection operators. 
-*/
-bool	invalid_syntax(char *line)
-{
-	if ((line[0] == PIPE) || (line[ft_strlen(line) - 1] == PIPE))
-		return (unexpected_token(PIPE));
-	if (is_instr(REDIRECTS, line[ft_strlen(line) - 1]))
-		return (unexpected_token(line[ft_strlen(line) - 1]));
-	return (false);	
-}
-/*
-	This function checks the validity of user input in a shell program.
-	It examines the input for empty strings, unclosed quotes, or syntax errors.
-	If any of these issues are found, the function marks the input as invalid,
-	performs cleanup, sets the exit status, and returns the validity status.
-*/
-	bool	valid_line(char *line)
-	{
-		bool	valid;
-
-		valid = true;
-		
-		if (*line == '\0')
-			valid = false;
-		else if (unclosed_quote(line))
-		{
-			ft_putendl_fd(UNCLOSED_QUOTE, STDERR_FILENO);
-			valid = false;
-		}
-		else if (invalid_syntax(line))
-		{
-			ft_putendl_fd(SYNTAX_ERROR, STDERR_FILENO);
-			valid = false;
-		}
-		if (!valid)
-		{
-			free(line);
-			global_status = UNVALID_LINE;
-		}
-		return (valid);
-	}
-
 /*
     Within the loop, we 
     call a function to read a line && print a prompt., 
@@ -194,7 +110,7 @@ int main (int argc, char *argv[], char **env)
     (void)argc;
     (void)argv;
     (void)env;
-    
+
     shell_loop();
     return (1);
 }
