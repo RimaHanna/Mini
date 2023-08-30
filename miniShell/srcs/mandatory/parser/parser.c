@@ -52,7 +52,7 @@ t_operator	get_operator(char *operator)
 	if (!operator)
 		op = NONE;
 	else if (streq(operator, "|"))
-		op = PIPE;
+		op = PIPE_OP;
 	else if (streq(operator, ">>"))
 		op = APP_RDR_OP;
 	else if (streq(operator, ">"))
@@ -84,39 +84,52 @@ t_statement	*p_new_node(int argc)
 }
 
 /*
-	Function get_nr_statements:
+	Function get_nb_statements:
 	Calculates the number of statements (commands) based on input text.
 	Considers operators, quotes, and spaces to determine where statements end.
 	Handles cases where quotes are used to group characters.
 */
-size_t	get_nr_statements(char *input)
+size_t get_nb_statements(char *input)
 {
-	size_t	count;
-	bool	flag;
-	bool	quotes;
+    size_t count;   // Stores the number of statements
+    bool flag;      // Indicates whether a statement is being processed
+    bool quotes;    // Indicates whether quotes are currently active
 
-	count = 0;
-	flag = false;
-	quotes = false;
-	while (*input)
-	{
-		if (is_instr(OPERATORS, *input))
-			count += 1;
-		if (is_instr(QUOTES, *input) && *input == *(input + 1))
-			input += 1;
-		else if (is_instr(QUOTES, *input))
-			quotes = !quotes;
-		if (*input != ' ' && !is_instr(OPERATORS, *input) && !flag && !quotes)
-		{
-			flag = true;
-			count += 1;
-		}
-		else if (*input == ' ' || is_instr(OPERATORS, *input))
-			flag = false;
-		input += 1;
-	}
-	return (count);
+    count = 0;      // Initialize the count to zero
+    flag = false;   // Initialize the flag to false
+    quotes = false; // Initialize the quotes flag to false
+
+    while (*input) // Loop through each character in the input string
+    {
+        // If the current character is an operator, increment the count
+        if (is_instr(OPERATORS, *input))
+            count += 1;
+
+
+        // Check for double quotes and skip the next character if they match
+        if (is_instr(QUOTES, *input) && *input == *(input + 1))
+            input += 1;
+        // Toggle the quotes flag if a single quote is encountered
+        else if (is_instr(QUOTES, *input))
+            quotes = !quotes;
+
+        // If the current character is not a space, not an operator, not inside quotes,
+        // and a statement is not already being processed, mark the start of a new statement
+        if (*input != ' ' && !is_instr(OPERATORS, *input) && !flag && !quotes)
+        {
+            flag = true;    // Set the flag to indicate that a statement is being processed
+            count += 1;     // Increment the count for the new statement
+        }
+        // If the current character is a space or an operator, reset the flag
+        else if (*input == ' ' || is_instr(OPERATORS, *input))
+            flag = false;
+
+        input += 1; // Move to the next character in the input string
+    }\
+//printf("get_nb_statments count %ld\n", count);
+    return (count); // Return the final count of statements
 }
+
 
 
 /*
@@ -156,22 +169,21 @@ size_t	get_token_len(char *input_at_i)
 	Function parse_input:
 	Splits the input into an array of strings (tokens) representing statements 
 	and operators.
-	Uses the get_nr_statements and get_token_len functions to determine the 
+	Uses the get_br_statements and get_token_len functions to determine the 
 	length of each token.
 	Handles quoted substrings correctly.
 */
-
 char	**parse_input(char *input)
 {
 	size_t		i;
 	size_t		k;
-	char		**parsed;
 	size_t		len;
 	size_t		j;
+	char		**parsed;
 
 	i = 0;
 	k = 0;
-	parsed = malloc((get_nr_statements(input) + 1) * sizeof(char *));
+	parsed = malloc((get_nb_statements(input) + 1) * sizeof(char *));
 	while (input[i])
 	{
 		len = get_token_len(&input[i]);
@@ -212,26 +224,50 @@ t_statement	*parser(char *input)
 	char		**parsed;
 	t_statement	*temp;
 	t_statement	*head;
-	size_t		idx[2];
+	size_t		idx[2]; // An array to store two index, instead of divising 
+						// into i and j and have 2 lines.
 
+    // Tokenize the input command.
 	parsed = parse_input(input);
 	free(input);
+
+    // Create a new node for the linked list and assign it as the head.
 	temp = p_new_node(get_argc(&parsed[0]));
 	head = temp;
+
+    // idx[0] stores the current position in the parsed array.
 	idx[0] = 0;
 	while (parsed[idx[0]])
 	{
+        // idx[1] will store the index for filling argv of the current statement.
 		idx[1] = 0;
 		while (parsed[idx[0]] && !is_instr(OPERATORS, parsed[idx[0]][0]))
-			temp->argv[idx[1]++] = str_without_quotes(parsed[idx[0]++]);
+		{
+			temp->argv[idx[1]++] = str_without_quotes(parsed[idx[0]/*++*/]);
+    printf("Adding argument to argv: %s\n", temp->argv[idx[1] - 1]);
+		idx[0]++;
+		}
+        // Set the last element of argv to NULL.
 		temp->argv[idx[1]] = NULL;
 		if (!parsed[idx[0]])
 			break ;
+
+        // Set the operator for the current statement.
 		temp->operator = get_operator(parsed[idx[0]++]);
+    printf("Current statement operator: %d\n", temp->operator);
+        
+		// Create a new node for the next statement and assign it to temp->next.
 		temp->next = p_new_node(get_argc(&parsed[idx[1]]));
 		temp = temp->next;
+// Print the result of temp->next
+if (temp) 
+    printf("Next node has %d arguments.\n", temp->argc);
+else
+    printf("No more nodes after this one.\n");
 	}
 	temp->next = NULL;
 	free(parsed);
 	return (head);
 }
+
+

@@ -40,7 +40,7 @@ typedef enum e_operator
 	INP_RDR_OP, // <
 	MUL_RDR_OP, // <<
 	APP_RDR_OP, // >>
-	E_PIPE,
+	PIPE_OP,
 }				t_operator;
 
 /* All functions regarding t_statemnent list are referring to parser */
@@ -82,7 +82,7 @@ bool	is_spaces(char c);
 bool	streq(char *str1, char *str2);
 t_operator	get_operator(char *operator);
 t_statement	*p_new_node(int argc);
-size_t	get_nr_statements(char *input);
+size_t	get_nb_statements(char *input);
 size_t	get_token_len(char *input_at_i);
 char	**parse_input(char *input);
 t_statement	*parser(char *input);

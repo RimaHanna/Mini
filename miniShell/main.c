@@ -88,8 +88,6 @@ void    shell_loop()
     t_statement *statement_list;
 
 (void)data;
-
-
 // ADD THE SETUP
     while (1)
     {
@@ -101,8 +99,9 @@ void    shell_loop()
 		statement_list = parser(line);
 		data.head = statement_list;
 //		execute_type(statement_list, &data);
-        free(line);
+	//free(line);
         //free(args);
+
     }
 }
 
