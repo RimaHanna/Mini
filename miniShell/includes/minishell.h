@@ -33,19 +33,61 @@
 # define OPERATORS "|<>" 
 
 
+typedef enum e_operator
+{
+	NONE,
+	OUT_RDR_OP, // >
+	INP_RDR_OP, // <
+	MUL_RDR_OP, // <<
+	APP_RDR_OP, // >>
+	E_PIPE,
+}				t_operator;
+
+/* All functions regarding t_statemnent list are referring to parser */
+typedef struct s_statement
+{
+	int					argc;
+	char				**argv;
+	t_operator			operator;
+	struct s_statement	*next;
+}				t_statement;
+
+/* data keeps a pointer to the head node in
+ case of a need to call panic() (fork or pipe error) */
+
+typedef struct s_data
+{
+	char		**envp;
+	t_statement	*head;
+}				t_data;
+
+
 // PARSER
 
-    // remove_quotes
+    // remove_quotes.c
 size_t	size_without_quotes(char *parsed);
 char	*str_without_quotes(char *parsed);
 
-	// invalid_syntax
+	// invalid_syntax.c
 int		unclosed_quote(char *str);
 bool	unexpected_token(char token);
 bool	invalid_syntax(char *line);
 bool	string_has_operator(char *line);
 bool	invalid_syntax_in_operator(char *line);
 bool	valid_line(char *line);
+
+	// parser.c
+size_t	get_argc(char **parsed);
+bool	is_spaces(char c);
+bool	streq(char *str1, char *str2);
+t_operator	get_operator(char *operator);
+t_statement	*p_new_node(int argc);
+size_t	get_nr_statements(char *input);
+size_t	get_token_len(char *input_at_i);
+char	**parse_input(char *input);
+t_statement	*parser(char *input);
+
+
 
 
 // UTILS

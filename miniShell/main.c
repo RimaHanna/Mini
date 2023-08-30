@@ -43,7 +43,8 @@ char	*trim_free(char *line, char const *set)
 /*
 	Have the string wrote in the command line without anyspaces at the 
 	beginning and the end o the line in order to imitate the function of shell
-	when displaying the history
+	when displaying the history // it wasnt' needed for the add_history,
+	but i will keep it because it facilite the division of the string after
 */
 char	*trim_line(void)
 {
@@ -53,6 +54,7 @@ char	*trim_line(void)
 
 	prompt = "minishell$ ";
 	line = readline(prompt);
+	add_history(line);
 	trimed_line = trim_free(line, " \t");
 	return (trimed_line);
 }
@@ -82,17 +84,23 @@ void	check_null_line(char *line)
 void    shell_loop()
 {
     char    *line;
-    
+	t_data	data;
+    t_statement *statement_list;
+
+(void)data;
+
+
+// ADD THE SETUP
     while (1)
     {
         line = trim_line();
 		check_null_line(line);
-		add_history(line);
 		if (!valid_line(line))
 			continue;
-        //args = ft_split_line_into_args();
-        //ft_exec();
-
+// ADD THE EXPANDER WITH THE IF CONDITION
+		statement_list = parser(line);
+		data.head = statement_list;
+//		execute_type(statement_list, &data);
         free(line);
         //free(args);
     }
