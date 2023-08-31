@@ -7,7 +7,7 @@ RM = rm -rf
 LIBFT = ./libft/libft.a
 
 UTILS = ft_strncpy is_instr
-PARSER = remove_quotes invalid_syntax parser
+PARSER = remove_quotes invalid_syntax parser clean_parsed
 
 NAME = minishell
 SRCS =	$(addsuffix .c, $(UTILS))\

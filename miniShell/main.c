@@ -99,8 +99,7 @@ void    shell_loop()
 		statement_list = parser(line);
 		data.head = statement_list;
 //		execute_type(statement_list, &data);
-	//free(line);
-        //free(args);
+//		clean_parsed(&statement_list);
 
     }
 }

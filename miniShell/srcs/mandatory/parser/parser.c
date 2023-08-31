@@ -11,6 +11,7 @@ size_t	get_argc(char **parsed)
 	i = 0;
 	while (parsed[i])
 		i += 1;
+printf("l:14 get_argc number which is number of arguments = [%ld]\n", i);
 	return (i);
 }
 
@@ -86,7 +87,8 @@ t_statement	*p_new_node(int argc)
 /*
 	Function get_nb_statements:
 	Calculates the number of statements (commands) based on input text.
-	Considers operators, quotes, and spaces to determine where statements end.
+	Considers OPERATORS "|<>" , QUOTES "\'\"" , and spaces to determine
+	where statements end.
 	Handles cases where quotes are used to group characters.
 */
 size_t get_nb_statements(char *input)
@@ -103,12 +105,12 @@ size_t get_nb_statements(char *input)
     {
         // If the current character is an operator, increment the count
         if (is_instr(OPERATORS, *input))
-            count += 1;
+            count++;
 
 
         // Check for double quotes and skip the next character if they match
         if (is_instr(QUOTES, *input) && *input == *(input + 1))
-            input += 1;
+            input++;
         // Toggle the quotes flag if a single quote is encountered
         else if (is_instr(QUOTES, *input))
             quotes = !quotes;
@@ -118,15 +120,15 @@ size_t get_nb_statements(char *input)
         if (*input != ' ' && !is_instr(OPERATORS, *input) && !flag && !quotes)
         {
             flag = true;    // Set the flag to indicate that a statement is being processed
-            count += 1;     // Increment the count for the new statement
+            count++;     // Increment the count for the new statement
         }
         // If the current character is a space or an operator, reset the flag
         else if (*input == ' ' || is_instr(OPERATORS, *input))
             flag = false;
 
-        input += 1; // Move to the next character in the input string
-    }\
-//printf("get_nb_statments count %ld\n", count);
+        input++; // Move to the next character in the input string
+    }
+printf("l:131 get_nb_statments [%ld]\n", count);
     return (count); // Return the final count of statements
 }
 
@@ -138,32 +140,34 @@ size_t get_nb_statements(char *input)
 	from a given position.
 	Takes care of handling operators and spaces, as well as quoted substrings.
 */
-size_t	get_token_len(char *input_at_i)
+size_t get_token_len(char *input_at_i)
 {
-	size_t	i;
-	char	quotes;
+    size_t i;        // Index variable
+    char quotes;     // Character to track the opening quote type
 
-	i = 0;
-	if (is_instr(OPERATORS, input_at_i[i]))
-	{
-		if (input_at_i[i] == input_at_i[i + 1])
-			return (2);
-		return (1);
-	}
-	while (input_at_i[i]
-		&& !is_spaces(input_at_i[i])
-		&& !is_instr(OPERATORS, input_at_i[i]))
-	{
-		if (is_instr(QUOTES, input_at_i[i]))
-		{
-			quotes = input_at_i[i++];
-			while (input_at_i[i] && input_at_i[i] != quotes)
-				i += 1;
-		}
-		i += 1;
-	}
-	return (i);
+    i = 0;           // Initialize the index to zero
+    if (is_instr(OPERATORS, input_at_i[i])) // Check if the character is an operator
+    {
+        if (input_at_i[i] == input_at_i[i + 1]) // If it's a double operator
+            return 2; // Return a length of 2
+        return 1; // If it's a single operator, return a length of 1
+    }
+    
+    while (input_at_i[i] && !is_spaces(input_at_i[i]) && !is_instr(OPERATORS, input_at_i[i]))
+    {
+        // Loop while the current character exists, is not a space, and is not an operator
+        if (is_instr(QUOTES, input_at_i[i]))
+        {
+            quotes = input_at_i[i++]; // Store the opening quote character
+            while (input_at_i[i] && input_at_i[i] != quotes)
+                i++; // Increment i until the closing quote character is found
+        }
+        i++; // Move to the next character
+    }
+printf("l:167 get_token_len = [%ld] at letter: [%c]\n", i, *input_at_i);
+    return i; // Return the length of the token
 }
+
 
 /*
 	Function parse_input:
@@ -173,34 +177,52 @@ size_t	get_token_len(char *input_at_i)
 	length of each token.
 	Handles quoted substrings correctly.
 */
-char	**parse_input(char *input)
+char **parse_input(char *input)
 {
-	size_t		i;
-	size_t		k;
-	size_t		len;
-	size_t		j;
-	char		**parsed;
+    size_t i;       // Index for iterating through input
+    size_t k;       // Index for iterating through parsed array
+    size_t len;     // Length of the current token
+    size_t j;       // Index for copying characters within a token
+    char **parsed;  // Array to store parsed tokens
 
-	i = 0;
-	k = 0;
-	parsed = malloc((get_nb_statements(input) + 1) * sizeof(char *));
-	while (input[i])
-	{
-		len = get_token_len(&input[i]);
-		if (!len)
-		{
-			i += 1;
-			continue ;
-		}
-		parsed[k] = malloc((len + 1) * sizeof(char));
-		j = 0;
-		while (input[i] && j < len)
-			parsed[k][j++] = input[i++];
-		parsed[k++][j] = '\0';
-	}
-	parsed[k] = NULL;
-	return (parsed);
+    i = 0;          // Initialize index for input to 0
+    k = 0;          // Initialize index for parsed array to 0
+
+    // Allocate memory for the parsed array to hold the maximum possible number of tokens
+    parsed = malloc((get_nb_statements(input) + 1) * sizeof(char *));
+
+    while (input[i])
+    {
+        // Get the length of the current token starting from input[i]
+        len = get_token_len(&input[i]);
+
+        // If the length is 0, move to the next character in input
+        if (!len)
+        {
+            i += 1;
+            continue;
+        }
+
+        // Allocate memory for the current token in the parsed array
+        parsed[k] = malloc((len + 1) * sizeof(char));
+
+        j = 0; // Initialize index for copying characters within a token
+        while (input[i] && j < len)
+        {
+            // Copy the character from input to the current token in the parsed array
+            parsed[k][j++] = input[i++];
+        }
+
+        // Null-terminate the token in the parsed array
+        parsed[k++][j] = '\0';
+    }
+
+    // Null-terminate the parsed array
+    parsed[k] = NULL;
+
+    return (parsed); // Return the array of parsed tokens
 }
+
 
 /*
 	Function parser:
@@ -231,7 +253,9 @@ t_statement	*parser(char *input)
 	parsed = parse_input(input);
 	free(input);
 
-    // Create a new node for the linked list and assign it as the head.
+for (size_t i = 0; parsed[i] != NULL; i++) {
+    printf("l:257 parsed string: [%s]\n", parsed[i]);
+}    // Create a new node for the linked list and assign it as the head.
 	temp = p_new_node(get_argc(&parsed[0]));
 	head = temp;
 
@@ -244,7 +268,7 @@ t_statement	*parser(char *input)
 		while (parsed[idx[0]] && !is_instr(OPERATORS, parsed[idx[0]][0]))
 		{
 			temp->argv[idx[1]++] = str_without_quotes(parsed[idx[0]/*++*/]);
-    printf("Adding argument to argv: %s\n", temp->argv[idx[1] - 1]);
+printf("l:271 Adding argument to argv: [%s]\n", temp->argv[idx[1] - 1]);
 		idx[0]++;
 		}
         // Set the last element of argv to NULL.
@@ -254,16 +278,14 @@ t_statement	*parser(char *input)
 
         // Set the operator for the current statement.
 		temp->operator = get_operator(parsed[idx[0]++]);
-    printf("Current statement operator: %d\n", temp->operator);
+printf("l:281 Current statement operator: [%d]\n", temp->operator);
         
 		// Create a new node for the next statement and assign it to temp->next.
 		temp->next = p_new_node(get_argc(&parsed[idx[1]]));
 		temp = temp->next;
 // Print the result of temp->next
 if (temp) 
-    printf("Next node has %d arguments.\n", temp->argc);
-else
-    printf("No more nodes after this one.\n");
+    printf("l:288 if temp / Next node has %d arguments.\n", temp->argc);
 	}
 	temp->next = NULL;
 	free(parsed);
