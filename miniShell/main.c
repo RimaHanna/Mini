@@ -59,19 +59,35 @@ char	*trim_line(void)
 	return (trimed_line);
 }
 
+// rl_clear_history is from the history libray
+void	destroy(t_data *data)
+{
+	rl_clear_history();
+	if (data->head)
+		parse_lst_clean(&data->head);
+}
+
+void	exit_shell(int exit_status, t_data *data)
+{
+	ft_putendl_fd("exit", STDOUT_FILENO);
+	global_status = exit_status;
+	if (data)
+		destroy(data);
+	exit(global_status);
+}
+
 /*
 	This function will check the return of readline (man readline) if it
 	is NULL, if it is the case we have to free the line and exit, and in this
 	case it shouldn't be registered in history.
 	The exit_success has the value of 0
 */
-void	check_null_line(char *line)
+void	check_null_line(char *line, t_data *data)
 {
 	if (line == NULL)
 	{
 		free(line);
-		ft_putendl_fd("exit", STDOUT_FILENO);
-		exit(EXIT_SUCCESS);
+		exit_shell(EXIT_SUCCESS, data);
 	}
 }
 
@@ -81,25 +97,25 @@ void	check_null_line(char *line)
     call a function to split the line into args,
     and execute the args.
 */
+
 void    shell_loop()
 {
     char    *line;
 	t_data	data;
     t_statement *statement_list;
 
-(void)data;
 // ADD THE SETUP
     while (1)
     {
         line = trim_line();
-		check_null_line(line);
+		check_null_line(line, &data);
 		if (!valid_line(line))
 			continue;
 // ADD THE EXPANDER WITH THE IF CONDITION
 		statement_list = parser(line);
-		data.head = statement_list;
+//		data.head = statement_list;
 //		execute_type(statement_list, &data);
-//		clean_parsed(&statement_list);
+		clean_parsed(&statement_list, &data);
 
     }
 }
@@ -118,7 +134,7 @@ int main (int argc, char *argv[], char **env)
     (void)env;
 
     shell_loop();
-    return (1);
+    return (0);
 }
 
 

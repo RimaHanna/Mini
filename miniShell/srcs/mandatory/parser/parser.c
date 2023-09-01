@@ -187,39 +187,31 @@ char **parse_input(char *input)
 
     i = 0;          // Initialize index for input to 0
     k = 0;          // Initialize index for parsed array to 0
-
     // Allocate memory for the parsed array to hold the maximum possible number of tokens
     parsed = malloc((get_nb_statements(input) + 1) * sizeof(char *));
-
     while (input[i])
     {
         // Get the length of the current token starting from input[i]
         len = get_token_len(&input[i]);
-
         // If the length is 0, move to the next character in input
         if (!len)
         {
             i += 1;
             continue;
         }
-
         // Allocate memory for the current token in the parsed array
         parsed[k] = malloc((len + 1) * sizeof(char));
-
         j = 0; // Initialize index for copying characters within a token
         while (input[i] && j < len)
         {
             // Copy the character from input to the current token in the parsed array
             parsed[k][j++] = input[i++];
         }
-
         // Null-terminate the token in the parsed array
         parsed[k++][j] = '\0';
     }
-
     // Null-terminate the parsed array
     parsed[k] = NULL;
-
     return (parsed); // Return the array of parsed tokens
 }
 

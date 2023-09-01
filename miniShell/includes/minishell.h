@@ -88,7 +88,10 @@ char	**parse_input(char *input);
 t_statement	*parser(char *input);
 
 
-
+	// clean_parsed.c
+void	free_argvs(char **argvs);
+void	parse_lst_clean(t_statement **head);
+void	clean_parsed(t_statement **statement_list, t_data *data);
 
 // UTILS
 char	*ft_strncpy(char *dest, const char *src, size_t n);
@@ -97,7 +100,9 @@ bool	is_instr(const char *str, char chr);
 // MAIN
 char	*trim_free(char *line, char const *set);
 char	*trim_line(void);
-void	check_null_line(char *line);
+void	destroy(t_data *data);
+void	exit_shell(int exit_status, t_data *data);
+void	check_null_line(char *line, t_data *data);
 void    shell_loop();
 
 
