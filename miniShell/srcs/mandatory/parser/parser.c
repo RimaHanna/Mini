@@ -37,7 +37,7 @@ size_t	get_argc(char **parsed)
 
 	i = 0;
 	while (parsed[i])
-		i += 1;
+		i++;
 printf("l:41 get_argc number which is number of arguments = [%ld]\n", i);
 	return (i);
 }
@@ -114,9 +114,16 @@ t_statement	*p_new_node(int argc)
 /*
 	Function get_nb_statements:
 	Calculates the number of statements (commands) based on input text.
-	Considers OPERATORS "|<>" , QUOTES "\'\"" , and spaces to determine
-	where statements end.
+	Considers OPERATORS "|<>" , QUOTES "\'\"" , and end of the string to 
+	determine where statements end.
 	Handles cases where quotes are used to group characters.
+	EXAMPLE:
+	size_t result = get_nb_statements("ls -l | grep 'file.txt' > output.txt 
+		< input.txt");
+	result = 2;
+	1- "ls -l" - The first statement before |.
+"	2- grep 'file.txt' > output.txt < input.txt" - 
+		The second statement after |, which includes multiple operators (>, <).
 */
 size_t get_nb_statements(char *input)
 {
@@ -158,8 +165,6 @@ size_t get_nb_statements(char *input)
 printf("l:158 get_nb_statments [%ld]\n", count);
     return (count); // Return the final count of statements
 }
-
-
 
 /*
 	Function get_token_len:
