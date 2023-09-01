@@ -58,11 +58,32 @@ char	*trim_line(void)
 	trimed_line = trim_free(line, " \t");
 	return (trimed_line);
 }
+/*
+void	v_lstclear(t_vlst **head)
+{
+	t_vlst	*temp;
+	t_vlst	*next_node;
 
+	if (!head)
+		return ;
+	temp = *head;
+	while (temp != NULL)
+	{
+		next_node = temp->next;
+		free(temp->var_name);
+		free(temp->var_value);
+		free(temp);
+		temp = next_node;
+	}
+	*head = NULL;
+}
+*/
 // rl_clear_history is from the history libray
 void	destroy(t_data *data)
 {
 	rl_clear_history();
+//	if (data->envp_lst)
+//		v_lstclear(&data->envp_lst);
 	if (data->head)
 		parse_lst_clean(&data->head);
 }
@@ -111,6 +132,12 @@ void    shell_loop()
 		check_null_line(line, &data);
 		if (!valid_line(line))
 			continue;
+//		line = expander(line, &data);
+//		if (!line[0])
+//		{
+//			free(line);
+//			continue;
+//		}
 // ADD THE EXPANDER WITH THE IF CONDITION
 		statement_list = parser(line);
 //		data.head = statement_list;

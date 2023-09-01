@@ -43,7 +43,9 @@ typedef enum e_operator
 	PIPE_OP,
 }				t_operator;
 
-/* All functions regarding t_statemnent list are referring to parser */
+/* 	All functions regarding t_statemnent list are referring to parser */
+/*	The t_statement structure holds information about a single shell 
+command (its arguments, operator, and a pointer to the next command)*/
 typedef struct s_statement
 {
 	int					argc;
@@ -52,12 +54,20 @@ typedef struct s_statement
 	struct s_statement	*next;
 }				t_statement;
 
+//typedef struct s_vlst {
+//	char			*var_name;
+//	char			*var_value;
+//	bool			is_exported;
+//	struct s_vlst	*next;
+//}				t_vlst;
+
 /* data keeps a pointer to the head node in
  case of a need to call panic() (fork or pipe error) */
 
 typedef struct s_data
 {
 	char		**envp;
+//	t_vlst		*envp_lst;
 	t_statement	*head;
 }				t_data;
 
@@ -92,6 +102,22 @@ t_statement	*parser(char *input);
 void	free_argvs(char **argvs);
 void	parse_lst_clean(t_statement **head);
 void	clean_parsed(t_statement **statement_list, t_data *data);
+
+	// expander.c
+//bool	single_dollar(char *input_at_i);
+//long long	ft_digits(long long n);
+//char	*ft_lltoa(long long n);
+//void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
+//size_t	exit_status_size(void);
+//size_t	expand_size(char *input_at_i, size_t *i, t_data *data);
+//int	expanded_size(char *input, t_data *data);
+//size_t	expand_exit_status(char *expanded_input_at_i, size_t *i);
+//char	*get_varvalue_fromvlst(char *var_name, t_data *data);
+//char	*get_fromvlst(char *var_name, t_vlst **head);
+//size_t	expand_variable(char *expanded_input_at_i, char *input,
+//	size_t *i, t_data *data);
+//char	*expander(char *input, t_data *data);
+
 
 // UTILS
 char	*ft_strncpy(char *dest, const char *src, size_t n);

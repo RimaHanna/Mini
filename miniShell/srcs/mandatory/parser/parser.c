@@ -1,5 +1,32 @@
 #include "minishell.h"
 
+/*
+	This code is responsible for tokenizing and parsing user input into a 
+	linked list of statements, where each statement represents a command 
+	with arguments and operators. 
+	The code relies on the sequence of the input string and the presence of 
+	operators to identify commands and their arguments.
+	
+	Here's how it typically works:
+
+	1- The code starts parsing the input string from left to right.
+	2- It identifies and separates commands and their arguments based on the 
+	presence of operators such as |, <, >, <<, and >>.
+	3- When it encounters an operator, it marks the end of the current command 
+	and starts parsing the next one.
+	4- It assumes that the first token in each command sequence is the command 
+	itself, and the subsequent tokens are its arguments.
+	5- The type of operator (e.g., pipe |, input redirection <, 
+	output redirection >, etc.) is associated with the command to 
+	indicate how commands are connected.
+*/
+/*
+	get_argc, is_spaces, streq, get_operator, p_new_node, get_nb_statements, 
+	get_token_len, and parse_input. These functions are used to perform tasks 
+	like counting arguments, comparing strings, and parsing the input into 
+	tokens.
+*/
+
 /* 
 	get_argc: Calculates the number of elements (arguments) in an array of 
 	strings.
@@ -11,7 +38,7 @@ size_t	get_argc(char **parsed)
 	i = 0;
 	while (parsed[i])
 		i += 1;
-printf("l:14 get_argc number which is number of arguments = [%ld]\n", i);
+printf("l:41 get_argc number which is number of arguments = [%ld]\n", i);
 	return (i);
 }
 
@@ -128,7 +155,7 @@ size_t get_nb_statements(char *input)
 
         input++; // Move to the next character in the input string
     }
-printf("l:131 get_nb_statments [%ld]\n", count);
+printf("l:158 get_nb_statments [%ld]\n", count);
     return (count); // Return the final count of statements
 }
 
@@ -164,7 +191,7 @@ size_t get_token_len(char *input_at_i)
         }
         i++; // Move to the next character
     }
-printf("l:167 get_token_len = [%ld] at letter: [%c]\n", i, *input_at_i);
+printf("l:194 get_token_len = [%ld] at letter: [%c]\n", i, *input_at_i);
     return i; // Return the length of the token
 }
 
@@ -232,6 +259,18 @@ char **parse_input(char *input)
 	Sets the next of the last node to NULL.
 	Frees the parsed array.
 	Returns the head of the linked list.
+	EXAMPLE:
+	Function call:
+	t_statement *result = parser("ls -l | grep 'file.txt'");
+	Return Value (Linked List of Statements):
+	Resulting Linked List of Statements:
+1. Command: "ls"
+   - Arguments: ["-l"]
+   - Operator: PIPE_OP
+
+2. Command: "grep"
+   - Arguments: ["'file.txt'"]
+   - Operator: NONE
 */
 t_statement	*parser(char *input)
 {
@@ -246,7 +285,7 @@ t_statement	*parser(char *input)
 	free(input);
 
 for (size_t i = 0; parsed[i] != NULL; i++) {
-    printf("l:257 parsed string: [%s]\n", parsed[i]);
+    printf("l:288 parsed string: [%s]\n", parsed[i]);
 }    // Create a new node for the linked list and assign it as the head.
 	temp = p_new_node(get_argc(&parsed[0]));
 	head = temp;
@@ -260,7 +299,7 @@ for (size_t i = 0; parsed[i] != NULL; i++) {
 		while (parsed[idx[0]] && !is_instr(OPERATORS, parsed[idx[0]][0]))
 		{
 			temp->argv[idx[1]++] = str_without_quotes(parsed[idx[0]/*++*/]);
-printf("l:271 Adding argument to argv: [%s]\n", temp->argv[idx[1] - 1]);
+printf("l:302 Adding argument to argv: [%s]\n", temp->argv[idx[1] - 1]);
 		idx[0]++;
 		}
         // Set the last element of argv to NULL.
@@ -270,14 +309,14 @@ printf("l:271 Adding argument to argv: [%s]\n", temp->argv[idx[1] - 1]);
 
         // Set the operator for the current statement.
 		temp->operator = get_operator(parsed[idx[0]++]);
-printf("l:281 Current statement operator: [%d]\n", temp->operator);
+printf("l:312 Current statement operator: [%d]\n", temp->operator);
         
 		// Create a new node for the next statement and assign it to temp->next.
 		temp->next = p_new_node(get_argc(&parsed[idx[1]]));
 		temp = temp->next;
 // Print the result of temp->next
 if (temp) 
-    printf("l:288 if temp / Next node has %d arguments.\n", temp->argc);
+    printf("l:319 if temp / Next node has %d arguments.\n", temp->argc);
 	}
 	temp->next = NULL;
 	free(parsed);
