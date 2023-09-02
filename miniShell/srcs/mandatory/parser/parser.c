@@ -114,16 +114,13 @@ t_statement	*p_new_node(int argc)
 /*
 	Function get_nb_statements:
 	Calculates the number of statements (commands) based on input text.
-	Considers OPERATORS "|<>" , QUOTES "\'\"" , and end of the string to 
-	determine where statements end.
+	Considers OPERATORS "|<>" , QUOTES "\'\"" , and spaces to determine
+	where statements end.
 	Handles cases where quotes are used to group characters.
 	EXAMPLE:
-	size_t result = get_nb_statements("ls -l | grep 'file.txt' > output.txt 
-		< input.txt");
-	result = 2;
-	1- "ls -l" - The first statement before |.
-"	2- grep 'file.txt' > output.txt < input.txt" - 
-		The second statement after |, which includes multiple operators (>, <).
+	get_nb_statments("ls -l | cat -e")
+	return result 2 (1 until the operator and one until the NULL)
+	But in order that it put the right result it should be between quote
 */
 size_t get_nb_statements(char *input)
 {
@@ -134,13 +131,13 @@ size_t get_nb_statements(char *input)
     count = 0;      // Initialize the count to zero
     flag = false;   // Initialize the flag to false
     quotes = false; // Initialize the quotes flag to false
-
+printf("l:134 get_nb_statements the input is [%s]\n", input);
     while (*input) // Loop through each character in the input string
     {
+//printf("l:137 get_nb_statement the character is [%c]\n", *input);
         // If the current character is an operator, increment the count
         if (is_instr(OPERATORS, *input))
             count++;
-
 
         // Check for double quotes and skip the next character if they match
         if (is_instr(QUOTES, *input) && *input == *(input + 1))
@@ -205,7 +202,7 @@ printf("l:194 get_token_len = [%ld] at letter: [%c]\n", i, *input_at_i);
 	Function parse_input:
 	Splits the input into an array of strings (tokens) representing statements 
 	and operators.
-	Uses the get_br_statements and get_token_len functions to determine the 
+	Uses the get_nb_statements and get_token_len functions to determine the 
 	length of each token.
 	Handles quoted substrings correctly.
 */
@@ -228,7 +225,7 @@ char **parse_input(char *input)
         // If the length is 0, move to the next character in input
         if (!len)
         {
-            i += 1;
+            i++;
             continue;
         }
         // Allocate memory for the current token in the parsed array

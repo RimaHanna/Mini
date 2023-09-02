@@ -1,14 +1,21 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
-#include <unistd.h>
-#include <stdio.h>
+
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../libft/libft.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <errno.h>
 
+#include "../libft/libft.h"
 
 /*
 	PREDEFINED MAN MACROS FOR FD
@@ -19,12 +26,14 @@
 
 
 // DEFINE GLOBAL_STATUS ERROR
-# define UNVALID_LINE 1
+# define UNVALID_LINE 2
 
 // DEFINE SYNTAX MESSAGE
 # define UNCLOSED_QUOTE "minishell: unclosed quote"
 # define SYNTAX_ERROR "minishell: syntax error"
 # define UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
+# define RED_SYT_ERR "minishell: syntax error near unexpected token `newline'"
+#define ERROR_MESSAGE "minishell: no support for command-line arguments"
 
 // DEFINE CONSTANT
 # define QUOTES "\'\""
@@ -54,37 +63,53 @@ typedef struct s_statement
 	struct s_statement	*next;
 }				t_statement;
 
-//typedef struct s_vlst {
-//	char			*var_name;
-//	char			*var_value;
-//	bool			is_exported;
-//	struct s_vlst	*next;
-//}				t_vlst;
+typedef struct s_vlst {
+	char			*var_name;
+	char			*var_value;
+	bool			is_exported;
+	struct s_vlst	*next;
+}				t_vlst;
 
 /* data keeps a pointer to the head node in
- case of a need to call panic() (fork or pipe error) */
+ case of a need to call exit_all() (fork or pipe error) */
 
 typedef struct s_data
 {
 	char		**envp;
-//	t_vlst		*envp_lst;
+	t_vlst		*envp_lst;
 	t_statement	*head;
 }				t_data;
 
-
 // PARSER
+	// clean_parsed.c
+void	free_argvs(char **argvs);
+void	parse_lst_clean(t_statement **head);
+void	clean_parsed(t_statement **statement_list, t_data *data);
 
-    // remove_quotes.c
-size_t	size_without_quotes(char *parsed);
-char	*str_without_quotes(char *parsed);
+	// expander.c
+bool	single_dollar(char *input_at_i);
+long long	ft_digits(long long n);
+char	*ft_lltoa(long long n);
+void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
+size_t	exit_status_size(void);
+size_t	expand_size(char *input_at_i, size_t *i, t_data *data);
+int	expanded_size(char *input, t_data *data);
+size_t	expand_exit_status(char *expanded_input_at_i, size_t *i);
+char	*get_varvalue_fromvlst(char *var_name, t_data *data);
+char	*get_fromvlst(char *var_name, t_vlst **head);
+size_t	expand_variable(char *expanded_input_at_i, char *input,
+	size_t *i, t_data *data);
+char	*expander(char *line, t_data *data);
 
 	// invalid_syntax.c
 int		unclosed_quote(char *str);
 bool	unexpected_token(char token);
 bool	invalid_syntax(char *line);
 bool	string_has_operator(char *line);
+bool	invalid_syntax2(char *line);
+bool	string_has_operator(char *line);
 bool	invalid_syntax_in_operator(char *line);
-bool	valid_line(char *line);
+bool	valid_line(char *line, t_data *data);
 
 	// parser.c
 size_t	get_argc(char **parsed);
@@ -97,27 +122,9 @@ size_t	get_token_len(char *input_at_i);
 char	**parse_input(char *input);
 t_statement	*parser(char *input);
 
-
-	// clean_parsed.c
-void	free_argvs(char **argvs);
-void	parse_lst_clean(t_statement **head);
-void	clean_parsed(t_statement **statement_list, t_data *data);
-
-	// expander.c
-//bool	single_dollar(char *input_at_i);
-//long long	ft_digits(long long n);
-//char	*ft_lltoa(long long n);
-//void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
-//size_t	exit_status_size(void);
-//size_t	expand_size(char *input_at_i, size_t *i, t_data *data);
-//int	expanded_size(char *input, t_data *data);
-//size_t	expand_exit_status(char *expanded_input_at_i, size_t *i);
-//char	*get_varvalue_fromvlst(char *var_name, t_data *data);
-//char	*get_fromvlst(char *var_name, t_vlst **head);
-//size_t	expand_variable(char *expanded_input_at_i, char *input,
-//	size_t *i, t_data *data);
-//char	*expander(char *input, t_data *data);
-
+   // remove_quotes.c
+size_t	size_without_quotes(char *parsed);
+char	*str_without_quotes(char *parsed);
 
 // UTILS
 char	*ft_strncpy(char *dest, const char *src, size_t n);
@@ -126,9 +133,10 @@ bool	is_instr(const char *str, char chr);
 // MAIN
 char	*trim_free(char *line, char const *set);
 char	*trim_line(void);
+void	variable_lst_clean(t_vlst **head);
 void	destroy(t_data *data);
 void	exit_shell(int exit_status, t_data *data);
-void	check_null_line(char *line, t_data *data);
+void	exit_all(t_data *data, char *msg, int exit_status);
 void    shell_loop();
 
 

@@ -2,7 +2,6 @@
 
 extern int global_status;
 
-//
 /*
 	This code appears to be essential for expanding variables and managing the 
 	exit status within a minishell project, allowing users to work with 
