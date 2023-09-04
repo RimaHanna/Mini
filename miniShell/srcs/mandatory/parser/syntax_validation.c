@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-extern long long	global_status;
+extern long long	g_last_exit_status;
 
 int	unclosed_quote(char *str)
 {
@@ -81,7 +81,7 @@ bool	string_has_operator(char *line)
 		if (valid == false) // IT ISN'T VALID
 		{
 			free(line);
-			global_status = UNVALID_LINE;
+			g_last_exit_status = UNVALID_LINE;
 		}
 		return (valid);
 	}

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-extern long long	global_status;
+extern long long	g_last_exit_status;
 
 /*
 	This code appears to be essential for expanding variables and managing the 
@@ -43,7 +43,7 @@ size_t	exit_status_size(void)
 	char	*exit_status;
 	size_t	size;
 
-	exit_status = ft_lltoa(global_status);
+	exit_status = ft_lltoa(g_last_exit_status);
 	size = ft_strlen(exit_status);
 	free(exit_status);
 	return (size);
@@ -163,7 +163,7 @@ size_t	expand_exit_status(char *expanded_input_at_i, size_t *i)
 	size_t	j;
 
 	*i += 2;
-	exit_status = ft_lltoa(global_status);
+	exit_status = ft_lltoa(g_last_exit_status);
 	j = 0;
 	while (exit_status[j])
 	{

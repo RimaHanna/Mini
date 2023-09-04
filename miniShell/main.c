@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-long long global_status = 0;
+long long g_last_exit_status = 0;
 
 /*
 	clean the variable list
@@ -49,10 +49,10 @@ void	destroy(t_data *data)
 void	exit_shell(int exit_status, t_data *data)
 {
 	ft_putendl_fd("exit", STDOUT_FILENO);
-	global_status = exit_status;
+	g_last_exit_status = exit_status;
 	if (data)
 		destroy(data);
-	exit(global_status);
+	exit(g_last_exit_status);
 }
 
 /*
