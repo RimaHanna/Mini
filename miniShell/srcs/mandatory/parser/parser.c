@@ -38,7 +38,7 @@ size_t	get_argc(char **parsed)
 	i = 0;
 	while (parsed[i])
 		i++;
-printf("l:41 get_argc number which is number of arguments = [%ld]\n", i);
+//printf("l:41 get_argc number which is number of arguments = [%ld]\n", i);
 	return (i);
 }
 
@@ -131,7 +131,7 @@ size_t get_nb_statements(char *input)
     count = 0;      // Initialize the count to zero
     flag = false;   // Initialize the flag to false
     quotes = false; // Initialize the quotes flag to false
-printf("l:134 get_nb_statements the input is [%s]\n", input);
+//printf("l:134 get_nb_statements the input is [%s]\n", input);
     while (*input) // Loop through each character in the input string
     {
 //printf("l:137 get_nb_statement the character is [%c]\n", *input);
@@ -159,7 +159,7 @@ printf("l:134 get_nb_statements the input is [%s]\n", input);
 
         input++; // Move to the next character in the input string
     }
-printf("l:158 get_nb_statments [%ld]\n", count);
+//printf("l:158 get_nb_statments [%ld]\n", count);
     return (count); // Return the final count of statements
 }
 
@@ -193,7 +193,7 @@ size_t get_token_len(char *input_at_i)
         }
         i++; // Move to the next character
     }
-printf("l:194 get_token_len = [%ld] at letter: [%c]\n", i, *input_at_i);
+//printf("l:194 get_token_len = [%ld] at letter: [%c]\n", i, *input_at_i);
     return i; // Return the length of the token
 }
 
@@ -274,6 +274,7 @@ char **parse_input(char *input)
    - Arguments: ["'file.txt'"]
    - Operator: NONE
 */
+
 t_statement	*parser(char *input)
 {
 	char		**parsed;
@@ -298,10 +299,12 @@ for (size_t i = 0; parsed[i] != NULL; i++) {
 	{
         // idx[1] will store the index for filling argv of the current statement.
 		idx[1] = 0;
+		char *swq;
 		while (parsed[idx[0]] && !is_instr(OPERATORS, parsed[idx[0]][0]))
 		{
-			temp->argv[idx[1]++] = str_without_quotes(parsed[idx[0]/*++*/]);
-printf("l:302 Adding argument to argv: [%s]\n", temp->argv[idx[1] - 1]);
+			swq = str_without_quotes(parsed[idx[0]/*++*/]);
+printf("argv[%ld]: %s\n", idx[1], swq);
+			temp->argv[idx[1]++] = swq; //str_without_quotes(parsed[idx[0]/*++*/]);
 		idx[0]++;
 		}
         // Set the last element of argv to NULL.
@@ -317,12 +320,10 @@ printf("l:312 Current statement operator: [%d]\n", temp->operator);
 		temp->next = p_new_node(get_argc(&parsed[idx[1]]));
 		temp = temp->next;
 // Print the result of temp->next
-if (temp) 
-    printf("l:319 if temp / Next node has %d arguments.\n", temp->argc);
+printf("idx[0]: %ld\n", idx[0]);
+
 	}
 	temp->next = NULL;
 	free(parsed);
 	return (head);
 }
-
-

@@ -2,16 +2,21 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 LINK = -I./includes
 VPATH = srcs srcs/mandatory\
-		srcs/mandatory/parser srcs/mandatory/utils
+		srcs/mandatory/parser srcs/mandatory/utils srcs/mandatory/call\
+		srcs/mandatory/setup
 RM = rm -rf
 LIBFT = ./libft/libft.a
 
-UTILS = ft_strncpy is_instr
+UTILS = ft_strncpy is_instr ft_lltoa
 PARSER = remove_quotes invalid_syntax parser clean_parsed expander
+CALL = 
+SETUP = init_and_setup_shell config_signal
 
 NAME = minishell
 SRCS =	$(addsuffix .c, $(UTILS))\
 		$(addsuffix .c, $(PARSER))\
+		$(addsuffix .c, $(CALL))\
+		$(addsuffix .c, $(SETUP))\
 		main.c
 		
 OBJ_DIR = obj

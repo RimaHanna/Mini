@@ -1,12 +1,20 @@
 #include "minishell.h"
 
-extern int global_status;
+extern long long	global_status;
 
 /*
 	This code appears to be essential for expanding variables and managing the 
 	exit status within a minishell project, allowing users to work with 
 	environment variables and special shell variables like $?
 */
+
+void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes)
+{
+	*i = 0;
+	*size = 0;
+	*in_quotes = false;
+	*in_dquotes = false;
+}
 
 /*
 	single_dollar Function:
@@ -27,66 +35,6 @@ bool	single_dollar(char *input_at_i)
 }
 
 /*
-	This function calculates the number of digits in a given long long integer.
-	Converting the exit status to a string.
-*/
-long long	ft_digits(long long n)
-{
-	long long	digits;
-
-	digits = 0;
-	if (n <= 0)
-		digits += 1;
-	while (n != 0)
-	{
-		n /= 10;
-		digits += 1;
-	}
-	return (digits);
-}
-
-/*
-	ft_lltoa Function:
-	This function converts a long long integer to a string.
-*/
-
-char	*ft_lltoa(long long n)
-{
-	long long	digits;
-	int			signal;
-	char		*result;
-
-	digits = ft_digits(n);
-	signal = 1;
-	result = malloc((digits + 1) * sizeof(char));
-	if (!result)
-		return (NULL);
-	result[digits--] = '\0';
-	if (n < 0)
-	{
-		signal = -1;
-		result[0] = '-';
-	}
-	else if (n == 0)
-		result[0] = '0';
-	while (n != 0)
-	{
-		result[digits--] = (n % 10 * signal) + '0';
-		n /= 10;
-	}
-	return (result);
-}
-
-void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes)
-{
-	*i = 0;
-	*size = 0;
-	*in_quotes = false;
-	*in_dquotes = false;
-}
-
-
-/*
 	This function calculates the size (number of digits) of the exit status 
 	converted to a string.
 */
@@ -102,11 +50,49 @@ size_t	exit_status_size(void)
 }
 
 /*
+	These functions retrieve the value associated with a given variable name 
+	from a linked list (likely representing environment variables)
+	var_name: A string representing the name of the variable whose value 
+	you want to retrieve.
+	The function takes the var_name as input, which is the name of the variable 
+	you want to find the value for.
+	It iterates through the linked list (envp_lst) to find a node where the 
+	var_name matches the var_name stored in the list node (temp->var_name).
+*/
+
+char	*get_fromvlst(char *var_name, t_vlst **head)
+{
+	t_vlst	*temp;
+
+	temp = *head;
+	while (temp != NULL)
+	{
+		if (streq(var_name, temp->var_name))
+			return (temp->var_value);
+		temp = temp->next;
+	}
+	return (NULL);
+}
+
+char	*get_varvalue_fromvlst(char *var_name, t_data *data)
+{
+	char	*var_value;
+
+	var_value = get_fromvlst(var_name, &data->envp_lst);
+	free(var_name);
+	return (var_value);
+}
+
+
+/*
 	This function calculates the size of the expanded input by handling 
 	variable expansion, taking care of different cases.
 	It identifies variable names following the $ character and expands
 	them by looking up their values in a list (likely representing environment 
 	variables).
+	ft_substr takes an input string s, extracts a substring starting from 
+	the specified start index with a maximum length of len, and returns a 
+	new dynamically allocated string containing the extracted substring
 */
 size_t	expand_size(char *input_at_i, size_t *i, t_data *data)
 {
@@ -188,38 +174,7 @@ size_t	expand_exit_status(char *expanded_input_at_i, size_t *i)
 	return (j);
 }
 
-/*
-	These functions retrieve the value associated with a given variable name 
-	from a linked list (likely representing environment variables)
-	var_name: A string representing the name of the variable whose value 
-	you want to retrieve.
-	The function takes the var_name as input, which is the name of the variable 
-	you want to find the value for.
-	It iterates through the linked list (envp_lst) to find a node where the 
-	var_name matches the var_name stored in the list node (temp->var_name).
-*/
-char	*get_varvalue_fromvlst(char *var_name, t_data *data)
-{
-	char	*var_value;
 
-	var_value = get_fromvlst(var_name, &data->envp_lst);
-	free(var_name);
-	return (var_value);
-}
-
-char	*get_fromvlst(char *var_name, t_vlst **head)
-{
-	t_vlst	*temp;
-
-	temp = *head;
-	while (temp != NULL)
-	{
-		if (streq(var_name, temp->var_name))
-			return (temp->var_value);
-		temp = temp->next;
-	}
-	return (NULL);
-}
 
 /*
 	This function handles the expansion of a variable and copies its value into 

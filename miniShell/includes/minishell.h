@@ -33,7 +33,7 @@
 # define SYNTAX_ERROR "minishell: syntax error"
 # define UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
 # define RED_SYT_ERR "minishell: syntax error near unexpected token `newline'"
-#define ERROR_MESSAGE "minishell: no support for command-line arguments"
+# define ERROR_MESSAGE "minishell: no support for command-line arguments"
 
 // DEFINE CONSTANT
 # define QUOTES "\'\""
@@ -44,9 +44,9 @@
 
 typedef enum e_operator
 {
-	NONE,
-	OUT_RDR_OP, // >
-	INP_RDR_OP, // <
+	NONE, // valeur 0
+	OUT_RDR_OP, // > // valeur 1
+	INP_RDR_OP, // < ...
 	MUL_RDR_OP, // <<
 	APP_RDR_OP, // >>
 	PIPE_OP,
@@ -70,8 +70,11 @@ typedef struct s_vlst {
 	struct s_vlst	*next;
 }				t_vlst;
 
-/* data keeps a pointer to the head node in
- case of a need to call exit_all() (fork or pipe error) */
+/*	Data keeps a pointer to the head node in case of a need to call 
+	exit_all() (fork or pipe error) 
+	t_vlst: This structure represents a node in a linked list used to store 
+	environment variables.
+ */
 
 typedef struct s_data
 {
@@ -88,8 +91,6 @@ void	clean_parsed(t_statement **statement_list, t_data *data);
 
 	// expander.c
 bool	single_dollar(char *input_at_i);
-long long	ft_digits(long long n);
-char	*ft_lltoa(long long n);
 void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
 size_t	exit_status_size(void);
 size_t	expand_size(char *input_at_i, size_t *i, t_data *data);
@@ -126,7 +127,22 @@ t_statement	*parser(char *input);
 size_t	size_without_quotes(char *parsed);
 char	*str_without_quotes(char *parsed);
 
+//SETUP
+	//config_signal.c
+void	child_signals(int signum);
+void	dismiss_signal(int signum);
+void	config_signals(void);
+
+	//init_and_setup_shell.c
+char	**split_envp(char *env);
+t_vlst	*v_new_node(char *var_name, char *var_value, bool is_exported);
+t_vlst	*init_envp_lst(char **envp);
+void	setup_shell(char **envp, t_data *data, t_statement **statement_list);
+
+
 // UTILS
+long long	ft_digits(long long n);
+char	*ft_lltoa(long long n);
 char	*ft_strncpy(char *dest, const char *src, size_t n);
 bool	is_instr(const char *str, char chr);
 

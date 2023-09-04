@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-extern int global_status;
+extern long long	global_status;
 
 int	unclosed_quote(char *str)
 {

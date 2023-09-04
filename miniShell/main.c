@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int global_status = 0;
+long long global_status = 0;
 
 /*
 	trim characters specified in the set parameter from the beginning
@@ -58,27 +58,6 @@ char	*trim_line(void)
 	trimed_line = trim_free(line, " \t");
 	return (trimed_line);
 }
-/*
-void	v_lstclear(t_vlst **head)
-{
-	t_vlst	*temp;
-	t_vlst	*next_node;
-
-	if (!head)
-		return ;
-	temp = *head;
-	while (temp != NULL)
-	{
-		next_node = temp->next;
-		free(temp->var_name);
-		free(temp->var_value);
-		free(temp);
-		temp = next_node;
-	}
-	*head = NULL;
-}
-*/
-
 
 /*
 	clean the variable list
@@ -145,10 +124,9 @@ void    shell_loop(int argc, char *argv[], char **env)
 	t_data	data;
     t_statement *statement_list;
 
-	(void)env;
 	if (argv && argc > 1)
 		exit_all(NULL, ERROR_MESSAGE, EXIT_FAILURE);
-// ADD THE SETUP
+	setup_shell(env, &data, &statement_list);
     while (1)
     {
         line = trim_line();
