@@ -88,7 +88,7 @@ t_vlst	*init_envp_lst(char **envp)
 	return (head);
 }
 
-void	setup_shell(char **envp, t_data *data, t_statement **statement_list)
+void	init_shell(char **envp, t_data *data, t_statement **statement_list)
 {
 	data->envp = envp;
 	data->envp_lst = init_envp_lst(envp);

@@ -57,9 +57,9 @@ void	exit_shell(int exit_status, t_data *data)
 
 /*
 	if there is more than one argument other than ./minishell ... 
-	we exit_all
+	we terminate_shell
 */
-void	exit_all(t_data *data, char *msg, int exit_status)
+void	terminate_shell(t_data *data, char *msg, int exit_status)
 {
 	if (data)
 		destroy (data);
@@ -80,12 +80,12 @@ void    shell_loop(int argc, char *argv[], char **env)
     t_statement *statement_list;
 
 	if (argv && argc > 1)
-		exit_all(NULL, ERROR_MESSAGE, EXIT_FAILURE);
-	setup_shell(env, &data, &statement_list);
+		terminate_shell(NULL, ERROR_MESSAGE, EXIT_FAILURE);
+	init_shell(env, &data, &statement_list);
     while (1)
     {
         lineofcommand = read_and_trim_lineofcommand();
-		if (!valid_line(lineofcommand, &data))
+		if (!valid_lineofcommand(lineofcommand, &data))
 			continue;
 		lineofcommand = expander(lineofcommand, &data);
 		if (!lineofcommand[0])

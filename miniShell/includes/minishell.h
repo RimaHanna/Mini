@@ -102,58 +102,63 @@ size_t	expand_variable(char *expanded_input_at_i, char *input,
 	size_t *i, t_data *data);
 char	*expander(char *line, t_data *data);
 
-	// invalid_syntax.c
-int		unclosed_quote(char *str);
-bool	unexpected_token(char token);
-bool	invalid_syntax(char *line);
-bool	string_has_operator(char *line);
-bool	invalid_syntax2(char *line);
-bool	string_has_operator(char *line);
-bool	invalid_syntax_in_operator(char *line);
-bool	valid_line(char *line, t_data *data);
 
 	// parser.c
-size_t	get_argc(char **parsed);
-bool	is_spaces(char c);
-bool	streq(char *str1, char *str2);
+size_t		get_argc(char **parsed);
+bool		is_spaces(char c);
+bool		streq(char *str1, char *str2);
 t_operator	get_operator(char *operator);
 t_statement	*p_new_node(int argc);
-size_t	get_nb_statements(char *input);
-size_t	get_token_len(char *input_at_i);
-char	**parse_input(char *input);
+size_t		get_nb_statements(char *input);
+size_t		get_token_len(char *input_at_i);
+char		**parse_input(char *input);
 t_statement	*parser(char *input);
 
    // remove_quotes.c
-size_t	size_without_quotes(char *parsed);
-char	*str_without_quotes(char *parsed);
+size_t		size_without_quotes(char *parsed);
+char		*str_without_quotes(char *parsed);
+
+	// string_trimming.c
+char		*trim_whitespace_from_edges(char *line, char const *set);
+char		*read_and_trim_lineofcommand(void);
+
+
+	// syntax_check
+bool		invalid_pipe_syntax(char *line);
+bool		invalid_token_syntax(char *line);
+bool		invalid_operator_syntax(char *line);
+
+	// syntax_validation.c
+int			unclosed_quote(char *str);
+bool		unexpected_token(char token);
+bool		string_has_operator(char *line);
+bool		valid_lineofcommand(char *line, t_data *data);
 
 //SETUP
 	//config_signal.c
-void	child_signals(int signum);
-void	dismiss_signal(int signum);
-void	config_signals(void);
+void		child_signals(int signum);
+void		dismiss_signal(int signum);
+void		config_signals(void);
 
 	//init_and_setup_shell.c
-char	**split_envp(char *env);
-t_vlst	*v_new_node(char *var_name, char *var_value, bool is_exported);
-t_vlst	*init_envp_lst(char **envp);
-void	setup_shell(char **envp, t_data *data, t_statement **statement_list);
+char		**split_envp(char *env);
+t_vlst		*v_new_node(char *var_name, char *var_value, bool is_exported);
+t_vlst		*init_envp_lst(char **envp);
+void		init_shell(char **envp, t_data *data, t_statement **statement_list);
 
 
 // UTILS
 long long	ft_digits(long long n);
-char	*ft_lltoa(long long n);
-char	*ft_strncpy(char *dest, const char *src, size_t n);
-bool	is_instr(const char *str, char chr);
+char		*ft_lltoa(long long n);
+char		*ft_strncpy(char *dest, const char *src, size_t n);
+bool		is_instr(const char *str, char chr);
 
 // MAIN
-char	*trim_whitespace_from_edges(char *line, char const *set);
-char	*read_and_trim_lineofcommand(void);
-void	variable_lst_clean(t_vlst **head);
-void	destroy(t_data *data);
-void	exit_shell(int exit_status, t_data *data);
-void	exit_all(t_data *data, char *msg, int exit_status);
-void    shell_loop();
+void		variable_lst_clean(t_vlst **head);
+void		destroy(t_data *data);
+void		exit_shell(int exit_status, t_data *data);
+void		terminate_shell(t_data *data, char *msg, int exit_status);
+void    	shell_loop();
 
 
 #endif
