@@ -15,51 +15,6 @@
 long long global_status = 0;
 
 /*
-	trim characters specified in the set parameter from the beginning
-	and end of a string s1
-*/
-char	*trim_free(char *line, char const *set)
-{
-	size_t	beg;
-	size_t	end;
-	char	*trimmed_str;
-
-	beg = 0;
-	if (!line || !set)
-		return (NULL);
-	while (line[beg] != '\0' && ft_strchr(set, line[beg]) != NULL)
-		beg++;
-	end = ft_strlen(line + beg);
-	while (end > beg && ft_strchr(set, line[(beg + end) - 1]) != NULL)
-		end--;
-	trimmed_str = malloc((end + 1) * sizeof(char));
-	if (!trimmed_str)
-		return (NULL);
-	ft_strncpy(trimmed_str, (line + beg), end);
-	free(line);
-	return (trimmed_str);
-}
-
-/*
-	Have the string wrote in the command line without anyspaces at the 
-	beginning and the end o the line in order to imitate the function of shell
-	when displaying the history // it wasnt' needed for the add_history,
-	but i will keep it because it facilite the division of the string after
-*/
-char	*trim_line(void)
-{
-	char	*line;
-	char	*trimed_line;
-	const char	*prompt;
-
-	prompt = "minishell$ ";
-	line = readline(prompt);
-	add_history(line);
-	trimed_line = trim_free(line, " \t");
-	return (trimed_line);
-}
-
-/*
 	clean the variable list
 */
 void	variable_lst_clean(t_vlst **head)
@@ -120,7 +75,7 @@ void	exit_all(t_data *data, char *msg, int exit_status)
 */
 void    shell_loop(int argc, char *argv[], char **env)
 {
-    char    *line;
+    char    *lineofcommand;
 	t_data	data;
     t_statement *statement_list;
 
@@ -129,16 +84,16 @@ void    shell_loop(int argc, char *argv[], char **env)
 	setup_shell(env, &data, &statement_list);
     while (1)
     {
-        line = trim_line();
-		if (!valid_line(line, &data))
+        lineofcommand = read_and_trim_lineofcommand();
+		if (!valid_line(lineofcommand, &data))
 			continue;
-		line = expander(line, &data);
-		if (!line[0])
+		lineofcommand = expander(lineofcommand, &data);
+		if (!lineofcommand[0])
 		{
-			free(line);
+			free(lineofcommand);
 			continue;
 		}
-		statement_list = parser(line);
+		statement_list = parser(lineofcommand);
 		data.head = statement_list;
 //		execute_type(statement_list, &data);
 		clean_parsed(&statement_list, &data);

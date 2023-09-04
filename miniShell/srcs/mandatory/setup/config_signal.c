@@ -14,7 +14,7 @@ extern long long	global_status;
 	to track the exit status of the program.
 	Exits the program with an exit status of 130.
 */
-/*
+
 void	child_signals(int signum)
 {
 	if (signum == SIGINT)
@@ -24,7 +24,7 @@ void	child_signals(int signum)
 		exit(130);
 	}
 }
-*/
+
 
 /*
 	This function is another signal handler for the SIGINT signal.

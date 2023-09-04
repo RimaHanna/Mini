@@ -147,8 +147,8 @@ char	*ft_strncpy(char *dest, const char *src, size_t n);
 bool	is_instr(const char *str, char chr);
 
 // MAIN
-char	*trim_free(char *line, char const *set);
-char	*trim_line(void);
+char	*trim_whitespace_from_edges(char *line, char const *set);
+char	*read_and_trim_lineofcommand(void);
 void	variable_lst_clean(t_vlst **head);
 void	destroy(t_data *data);
 void	exit_shell(int exit_status, t_data *data);

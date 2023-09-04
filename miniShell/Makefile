@@ -8,7 +8,8 @@ RM = rm -rf
 LIBFT = ./libft/libft.a
 
 UTILS = ft_strncpy is_instr ft_lltoa
-PARSER = remove_quotes invalid_syntax parser clean_parsed expander
+PARSER = remove_quotes invalid_syntax parser clean_parsed expander\
+			string_trimming
 CALL = 
 SETUP = init_and_setup_shell config_signal
 
