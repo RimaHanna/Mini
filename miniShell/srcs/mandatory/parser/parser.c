@@ -31,6 +31,8 @@
 	get_argc: Calculates the number of elements (arguments) in an array of 
 	strings.
 */
+/*
+// FUNCTION DON"T GET THE ARGC DEVISED BY STATEMENT
 size_t	get_argc(char **parsed)
 {
 	size_t	i;
@@ -40,6 +42,18 @@ size_t	get_argc(char **parsed)
 		i++;
 //printf("l:41 get_argc number which is number of arguments = [%ld]\n", i);
 	return (i);
+}
+*/
+
+size_t	get_argc(char **parsed)
+{
+	size_t	i;
+
+	i = 0;
+	while ((parsed[i]) && ((ft_strlen(parsed[i]) != 1) 
+			|| !is_instr(OPERATORS, parsed[i][0])))
+		i++;
+	return i;
 }
 
 bool	is_spaces(char c)
@@ -275,55 +289,116 @@ char **parse_input(char *input)
    - Operator: NONE
 */
 
+//MY PARSER 27 lines
 t_statement	*parser(char *input)
 {
 	char		**parsed;
 	t_statement	*temp;
 	t_statement	*head;
-	size_t		idx[2]; // An array to store two index, instead of divising 
-						// into i and j and have 2 lines.
+	size_t		idx[2];
 
-    // Tokenize the input command.
 	parsed = parse_input(input);
 	free(input);
-
-for (size_t i = 0; parsed[i] != NULL; i++) {
-    printf("l:288 parsed string: [%s]\n", parsed[i]);
-}    // Create a new node for the linked list and assign it as the head.
 	temp = p_new_node(get_argc(&parsed[0]));
 	head = temp;
-
-    // idx[0] stores the current position in the parsed array.
 	idx[0] = 0;
 	while (parsed[idx[0]])
 	{
-        // idx[1] will store the index for filling argv of the current statement.
 		idx[1] = 0;
-		char *swq;
 		while (parsed[idx[0]] && !is_instr(OPERATORS, parsed[idx[0]][0]))
-		{
-			swq = str_without_quotes(parsed[idx[0]/*++*/]);
-printf("argv[%ld]: %s\n", idx[1], swq);
-			temp->argv[idx[1]++] = swq; //str_without_quotes(parsed[idx[0]/*++*/]);
-		idx[0]++;
-		}
-        // Set the last element of argv to NULL.
+			temp->argv[idx[1]++] = str_without_quotes(parsed[idx[0]++]);
 		temp->argv[idx[1]] = NULL;
 		if (!parsed[idx[0]])
 			break ;
-
-        // Set the operator for the current statement.
 		temp->operator = get_operator(parsed[idx[0]++]);
-printf("l:312 Current statement operator: [%d]\n", temp->operator);
-        
-		// Create a new node for the next statement and assign it to temp->next.
-		temp->next = p_new_node(get_argc(&parsed[idx[1]]));
+		temp->next = p_new_node(get_argc(&parsed[idx[0]]));
 		temp = temp->next;
-// Print the result of temp->next
-printf("idx[0]: %ld\n", idx[0]);
-
 	}
 	temp->next = NULL;
 	free(parsed);
 	return (head);
 }
+
+/*
+// MY PARSER
+t_statement	*parser(char *input)
+{
+	char		**parsed;
+	t_statement	*temp;
+	t_statement	*head;
+	size_t		i;
+	size_t		j;
+	size_t		node;
+
+	parsed = parse_input(input);
+	free(input);
+	temp = p_new_node(get_argc(&parsed[0]));
+	head = temp;
+	i = 0;
+	node = 0;
+printf("	argc head: %d\n", head->argc);
+	while (parsed[i])
+	{
+//printf("parsed[%ld]: %s\n",i, parsed[i]);
+printf("node[%ld]:\n", node);
+		j = 0;
+		while (parsed[i] && !is_instr(OPERATORS, parsed[i][0]))
+		{
+printf("parsed[%ld]: %s\n",i, parsed[i]);
+			temp->argv[j] = str_without_quotes(parsed[i]);
+printf("	argv[%ld] est [%s]\n", j, temp->argv[j]);
+			j++;
+			i++;
+		}
+printf("parsed[%ld]: %s\n",i, parsed[i]);
+		temp->argv[j] = NULL;
+printf("	argc current: %d\n", temp->argc);
+		if (!parsed[i])
+			break ;
+		temp->operator = get_operator(parsed[i++]);
+printf("	operator [%d]\n", temp->operator);
+		temp->next = p_new_node(get_argc(&parsed[i]));
+if (temp->next != NULL)
+{
+printf("	next yes\n");
+}
+		temp = temp->next;
+		node++;
+	}
+	temp->next = NULL;
+	free(parsed);
+	return (head);
+}
+*/
+
+
+/*
+//HIS PARSER
+t_statement	*parser(char *input)
+{
+	char		**parsed;
+	t_statement	*temp;
+	t_statement	*head;
+	size_t		idx[2];
+
+	parsed = parse_input(input);
+	free(input);
+	temp = p_new_node(get_argc(&parsed[0]));
+	head = temp;
+	idx[0] = 0;
+	while (parsed[idx[0]])
+	{
+		idx[1] = 0;
+		while (parsed[idx[0]] && !is_instr(OPERATORS, parsed[idx[0]][0]))
+			temp->argv[idx[1]++] = str_without_quotes(parsed[idx[0]++]);
+		temp->argv[idx[1]] = NULL;
+		if (!parsed[idx[0]])
+			break ;
+		temp->operator = get_operator(parsed[idx[0]++]);
+		temp->next = p_new_node(get_argc(&parsed[idx[1]]));
+		temp = temp->next;
+	}
+	temp->next = NULL;
+	free(parsed);
+	return (head);
+}*/

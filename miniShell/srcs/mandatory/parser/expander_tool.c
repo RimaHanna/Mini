@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 /*
 	single_dollar Function:
 	This function checks if a dollar sign $ should be treated as a variable
