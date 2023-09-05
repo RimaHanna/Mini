@@ -89,17 +89,19 @@ void	free_argvs(char **argvs);
 void	parse_lst_clean(t_statement **head);
 void	clean_parsed(t_statement **statement_list, t_data *data);
 
-	// expander.c
+	// expander_tool.c
 bool	single_dollar(char *input_at_i);
-void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
-size_t	exit_status_size(void);
-size_t	expand_size(char *input_at_i, size_t *i, t_data *data);
-int	expanded_size(char *input, t_data *data);
-size_t	expand_exit_status(char *expanded_input_at_i, size_t *i);
 char	*get_varvalue_fromvlst(char *var_name, t_data *data);
 char	*get_fromvlst(char *var_name, t_vlst **head);
+size_t	expand_size(char *input_at_i, size_t *i, t_data *data);
 size_t	expand_variable(char *expanded_input_at_i, char *input,
 	size_t *i, t_data *data);
+
+	//expander.c
+size_t	exit_status_size(void);
+size_t	expand_exit_status(char *expanded_input_at_i, size_t *i);
+void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
+int		expanded_size(char *input, t_data *data);
 char	*expander(char *line, t_data *data);
 
 
@@ -149,7 +151,7 @@ void		init_shell(char **envp, t_data *data, t_statement **statement_list);
 
 // UTILS
 long long	ft_digits(long long n);
-char		*ft_lltoa(long long n);
+char		*ft_llinttoarray(long long n);
 char		*ft_strncpy(char *dest, const char *src, size_t n);
 bool		is_instr(const char *str, char chr);
 

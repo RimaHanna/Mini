@@ -24,7 +24,7 @@ long long	ft_digits(long long n)
 	This function converts a long long integer to a string.
 */
 
-char	*ft_lltoa(long long n)
+char	*ft_llinttoarray(long long n)
 {
 	long long	digits;
 	int			signal;

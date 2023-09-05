@@ -7,9 +7,9 @@ VPATH = srcs srcs/mandatory\
 RM = rm -rf
 LIBFT = ./libft/libft.a
 
-UTILS = ft_strncpy is_instr ft_lltoa
+UTILS = ft_strncpy is_instr ft_llinttoarray
 PARSER = remove_quotes syntax_validation parser clean_parsed expander\
-			string_trimming syntax_check
+			string_trimming syntax_check expander_tool
 SETUP = init_and_setup_shell config_signal
 
 NAME = minishell
