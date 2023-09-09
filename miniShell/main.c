@@ -95,7 +95,7 @@ void    shell_loop(int argc, char *argv[], char **env)
 		}
 		statement_list = parser(lineofcommand);
 		data.head = statement_list;
-//		execute_type(statement_list, &data);
+		execute_lineofcommand(statement_list, &data);
 		clean_parsed(&statement_list, &data);
     }
 }

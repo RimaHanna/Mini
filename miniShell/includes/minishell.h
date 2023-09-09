@@ -83,6 +83,24 @@ typedef struct s_data
 	t_statement	*head;
 }				t_data;
 
+// EXECUTION
+
+	//cmd_binaries
+char	*join_free(char *s1, char *s2);
+char	**get_paths(t_vlst *envp_lst);
+char	*get_bin_path(char *cmd, char **paths);
+void	exit_and_free_args(char **paths, char *cmd, int exit_status);
+void	cmd_binaries(t_statement *statement, t_data *data);
+
+	//ececute_lineofcommand.c
+void	exec_cmd(t_statement *current_node, t_data *data);
+void	exec_executables(t_statement *node, t_data *data);
+bool	is_valid_id(char *str);
+bool	builtin(t_statement *s, t_data *data);
+void	execute_lineofcommand(t_statement *statement_list, t_data *data);
+
+
+
 // PARSER
 	// clean_parsed.c
 void	free_argvs(char **argvs);
@@ -143,6 +161,7 @@ void		dismiss_signal(int signum);
 void		config_signals(void);
 
 	//init_and_setup_shell.c
+size_t		parser_lstsize(t_statement *head);
 char		**split_envp(char *env);
 t_vlst		*v_new_node(char *var_name, char *var_value, bool is_exported);
 t_vlst		*init_envp_lst(char **envp);
@@ -153,6 +172,7 @@ void		init_shell(char **envp, t_data *data, t_statement **statement_list);
 long long	ft_digits(long long n);
 char		*ft_llinttoarray(long long n);
 char		*ft_strncpy(char *dest, const char *src, size_t n);
+bool	is_digit(int c);
 bool		is_instr(const char *str, char chr);
 
 // MAIN

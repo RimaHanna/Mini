@@ -288,8 +288,8 @@ char **parse_input(char *input)
    - Arguments: ["'file.txt'"]
    - Operator: NONE
 */
-
-//MY PARSER 27 lines
+/*
+// PARSER 27 lines
 t_statement	*parser(char *input)
 {
 	char		**parsed;
@@ -318,9 +318,10 @@ t_statement	*parser(char *input)
 	free(parsed);
 	return (head);
 }
+*/
 
-/*
-// MY PARSER
+
+// PARSER WITH PRINTF
 t_statement	*parser(char *input)
 {
 	char		**parsed;
@@ -336,7 +337,7 @@ t_statement	*parser(char *input)
 	head = temp;
 	i = 0;
 	node = 0;
-printf("	argc head: %d\n", head->argc);
+//printf("	argc head: %d\n", head->argc);
 	while (parsed[i])
 	{
 //printf("parsed[%ld]: %s\n",i, parsed[i]);
@@ -344,13 +345,13 @@ printf("node[%ld]:\n", node);
 		j = 0;
 		while (parsed[i] && !is_instr(OPERATORS, parsed[i][0]))
 		{
-printf("parsed[%ld]: %s\n",i, parsed[i]);
+printf("		parsed[%ld]: %s\n",i, parsed[i]);
 			temp->argv[j] = str_without_quotes(parsed[i]);
 printf("	argv[%ld] est [%s]\n", j, temp->argv[j]);
 			j++;
 			i++;
 		}
-printf("parsed[%ld]: %s\n",i, parsed[i]);
+printf("		parsed[%ld]: %s\n",i, parsed[i]);
 		temp->argv[j] = NULL;
 printf("	argc current: %d\n", temp->argc);
 		if (!parsed[i])
@@ -369,36 +370,3 @@ printf("	next yes\n");
 	free(parsed);
 	return (head);
 }
-*/
-
-
-/*
-//HIS PARSER
-t_statement	*parser(char *input)
-{
-	char		**parsed;
-	t_statement	*temp;
-	t_statement	*head;
-	size_t		idx[2];
-
-	parsed = parse_input(input);
-	free(input);
-	temp = p_new_node(get_argc(&parsed[0]));
-	head = temp;
-	idx[0] = 0;
-	while (parsed[idx[0]])
-	{
-		idx[1] = 0;
-		while (parsed[idx[0]] && !is_instr(OPERATORS, parsed[idx[0]][0]))
-			temp->argv[idx[1]++] = str_without_quotes(parsed[idx[0]++]);
-		temp->argv[idx[1]] = NULL;
-		if (!parsed[idx[0]])
-			break ;
-		temp->operator = get_operator(parsed[idx[0]++]);
-		temp->next = p_new_node(get_argc(&parsed[idx[1]]));
-		temp = temp->next;
-	}
-	temp->next = NULL;
-	free(parsed);
-	return (head);
-}*/

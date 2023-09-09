@@ -1,5 +1,20 @@
 #include "minishell.h"
 
+// UTILS
+size_t	parser_lstsize(t_statement *head)
+{
+	t_statement	*temp;
+	size_t		size;
+
+	temp = head;
+	size = 0;
+	while (temp != NULL)
+	{
+		temp = temp->next;
+		size += 1;
+	}
+	return (size);
+}
 
 /*
 	This function takes a string env representing an environment variable in 
