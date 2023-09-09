@@ -99,7 +99,7 @@ t_vlst	*init_envp_lst(char **envp)
 		temp = temp->next;
 		i += 1;
 	}
-//	init_oldpwd(&head);
+	//init_old_pwd(&head);
 	return (head);
 }
 

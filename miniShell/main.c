@@ -67,11 +67,9 @@ void	terminate_shell(t_data *data, char *msg, int exit_status)
 	exit(exit_status);
 }
 
-/*
-    Within the loop, we 
-    call a function to read a line && print a prompt., 
-    call a function to split the line into args,
-    and execute the args.
+/**
+ * Init shell: configuration signals/ initialisation of all structures\list/
+ * initialisation of oldpwd 
 */
 void    shell_loop(int argc, char *argv[], char **env)
 {

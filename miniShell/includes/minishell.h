@@ -89,6 +89,17 @@ typedef struct s_data
 bool	builtin(t_statement *s, t_data *data);
 bool	is_builtin(t_statement *s);
 
+	//call_cmd.c
+int		call_cmd_unset(t_statement *s, t_data *data);
+int		call_cmd_cd(t_statement *s, t_data *data);
+bool	get_exported_state(char *var_name, t_vlst **head);
+t_vlst	*v_lstlast(t_vlst *node);
+void	v_lstadd_back(t_vlst **head, t_vlst *new);
+int		save_user_vars(char *statement, t_vlst **head, bool to_export);
+int		call_cmd_echo(t_statement *s);
+
+
+
 	//cmd_binaries
 char	*join_free(char *s1, char *s2);
 char	**get_paths(t_vlst *envp_lst);
@@ -100,8 +111,6 @@ void	cmd_binaries(t_statement *statement, t_data *data);
 void	exec_cmd(t_statement *current_node, t_data *data);
 void	exec_executables(t_statement *node, t_data *data);
 bool	is_valid_id(char *str);
-bool	builtin(t_statement *s, t_data *data);
-bool	is_builtin(t_statement *s);
 void	execute_lineofcommand(t_statement *statement_list, t_data *data);
 
 
@@ -172,6 +181,8 @@ t_vlst		*v_new_node(char *var_name, char *var_value, bool is_exported);
 t_vlst		*init_envp_lst(char **envp);
 void		init_shell(char **envp, t_data *data, t_statement **statement_list);
 
+	//init_old_pwd.c
+void	init_old_pwd(t_vlst **head);
 
 // UTILS
 long long	ft_digits(long long n);

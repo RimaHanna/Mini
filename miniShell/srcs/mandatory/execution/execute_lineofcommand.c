@@ -4,6 +4,7 @@ extern long long g_last_exit_status;
 
 // exec_pipe: WITH RANIA
 // exec_redirects: WITH RANIA
+// cmd_binaries: WITH RANIA
 /*
 	Verification du type d'opérateur de l'instruction (1-PIPE, 2-NONE, ou autre)
 	et appelle la fonction appropriée pour exécuter l'instruction
@@ -55,72 +56,6 @@ bool	is_valid_id(char *str)
 	return (true);
 }
 
-/**
- * @description Executes a statement only if it is built-in
- * Returns (true) if the statement is a built-in command and was executed,
- * (false) otherwise
- * @param {t_statement *} s, pointer to statement
- * @param {t_data *} data, pointer to the entire command line
- * @returns {bool}
-*/
-// Suite FILE: call_cmd.c
-bool	builtin(t_statement *s, t_data *data)
-{
-	if (streq(s->argv[0], "exit"))
-		cmd_exit(s, data);
-	else if (streq(s->argv[0], "unset"))
-		g_last_exit_status = call_cmd_unset(s, data);
-	else if (streq(s->argv[0], "export"))
-		g_last_exit_status = cmd_export(s, data);
-	else if (streq(s->argv[0], "cd"))
-		g_last_exit_status = call_cmd_cd(s, data);
-	else if (ft_strchr(s->argv[0], '=') && is_valid_id(s->argv[0]))
-		g_last_exit_status = save_user_vars(s->argv[0],
-				&data->envp_lst, false);
-	else if (streq(s->argv[0], "echo"))
-		g_last_exit_status = call_cmd_echo(s);
-	else if (streq(s->argv[0], "pwd"))
-		g_last_exit_status = cmd_pwd();
-	else if (streq(s->argv[0], "env"))
-		g_last_exit_status = cmd_env(data);
-	else
-		return (false);
-	return (true);
-}
-
-/**
- * @description Checks if a statement is a built-in
- * This function does not execute the statement
- * @param {t_statement *} s, pointer to statement
- * @param {t_data *} data, pointer to the entire command line
- * @returns {bool}
- * @author Rima
- * @date 20230909
- * @creation
-*/
-// Suite FILE: call_cmd.c
-bool	is_builtin(t_statement *s)
-{
-	if (streq(s->argv[0], "exit"))
-		return (true);
-	else if (streq(s->argv[0], "unset"))
-		return (true);
-	else if (streq(s->argv[0], "export"))
-		return (true);
-	else if (streq(s->argv[0], "cd"))
-		return (true);
-	else if (ft_strchr(s->argv[0], '=') && is_valid_id(s->argv[0]))
-		return (true);
-	else if (streq(s->argv[0], "echo"))
-		return (true);
-	else if (streq(s->argv[0], "pwd"))
-		return (true);
-	else if (streq(s->argv[0], "env"))
-		return (true);
-	else
-		return (false);
-}
-
 /*
 	Cette fonction est responsable de l'exécution d'une ligne de commande. 
 	Si la ligne de commande ne contient qu'une seule instruction, elle vérifie 
@@ -141,11 +76,6 @@ bool	is_builtin(t_statement *s)
 	le même processus parent sans avoir besoin de créer un processus enfant 
 	supplémentaire. C'est pourquoi la condition est là pour éviter le coût 
 	inutile d'un fork lorsque cela n'est pas nécessaire.
-	En résumé, le fork est utilisé pour créer de nouveaux processus uniquement 
-	lorsque la ligne de commande contient des opérateurs qui nécessitent 
-	l'exécution de plusieurs instructions dans des processus distincts. 
-	Pour une seule instruction, le code est exécuté directement dans le 
-	processus parent pour des raisons d'efficacité.
 	signal: It sets up a signal handler for the child process. Specifically, 
 	it catches the SIGINT signal, which typically corresponds to pressing 
 	Ctrl+C in the terminal.

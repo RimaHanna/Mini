@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+extern long long g_last_exit_status;
 
 /**
  * @description Executes a statement only if it is built-in

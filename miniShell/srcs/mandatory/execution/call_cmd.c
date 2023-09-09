@@ -4,7 +4,7 @@
 //cmd_exit: WITH RANIA
 
 //cmd_unset
-static int	call_cmd_unset(t_statement *s, t_data *data)
+int	call_cmd_unset(t_statement *s, t_data *data)
 {
 	if (s->argc == 1)
 		return (EXIT_SUCCESS);
@@ -13,8 +13,7 @@ static int	call_cmd_unset(t_statement *s, t_data *data)
 
 //cmd_export: WITH RANIA
 
-
-static int	call_cmd_cd(t_statement *s, t_data *data)
+int	call_cmd_cd(t_statement *s, t_data *data)
 {
 	if (s->argc > 2)
 		return (cd_too_many_args());
@@ -84,7 +83,7 @@ int	save_user_vars(char *statement, t_vlst **head, bool to_export)
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7
 
 
-static int	call_cmd_echo(t_statement *s)
+int	call_cmd_echo(t_statement *s)
 {
 	t_statement	*temp;
 	bool		has_n;
