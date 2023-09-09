@@ -55,6 +55,14 @@ bool	is_valid_id(char *str)
 	return (true);
 }
 
+/**
+ * @description Executes a statement only if it is built-in
+ * Returns (true) if the statement is a built-in command and was executed,
+ * (false) otherwise
+ * @param {t_statement *} s, pointer to statement
+ * @param {t_data *} data, pointer to the entire command line
+ * @returns {bool}
+*/
 // Suite FILE: call_cmd.c
 bool	builtin(t_statement *s, t_data *data)
 {
@@ -78,6 +86,39 @@ bool	builtin(t_statement *s, t_data *data)
 	else
 		return (false);
 	return (true);
+}
+
+/**
+ * @description Checks if a statement is a built-in
+ * This function does not execute the statement
+ * @param {t_statement *} s, pointer to statement
+ * @param {t_data *} data, pointer to the entire command line
+ * @returns {bool}
+ * @author Rima
+ * @date 20230909
+ * @creation
+*/
+// Suite FILE: call_cmd.c
+bool	is_builtin(t_statement *s)
+{
+	if (streq(s->argv[0], "exit"))
+		return (true);
+	else if (streq(s->argv[0], "unset"))
+		return (true);
+	else if (streq(s->argv[0], "export"))
+		return (true);
+	else if (streq(s->argv[0], "cd"))
+		return (true);
+	else if (ft_strchr(s->argv[0], '=') && is_valid_id(s->argv[0]))
+		return (true);
+	else if (streq(s->argv[0], "echo"))
+		return (true);
+	else if (streq(s->argv[0], "pwd"))
+		return (true);
+	else if (streq(s->argv[0], "env"))
+		return (true);
+	else
+		return (false);
 }
 
 /*
@@ -128,10 +169,15 @@ void	execute_lineofcommand(t_statement *statement_list, t_data *data)
 
 	if (parser_lstsize(statement_list) == 1)
 	{
-		if (!builtin(statement_list, data) && fork() == 0)
+		if (is_builtin(statement_list))
+			builtin(statement_list, data);
+		else
 		{
-			signal(SIGINT, child_signals);
-			exec_executables(statement_list, data);
+			if(fork() == 0)
+			{
+				signal(SIGINT, child_signals);
+				exec_executables(statement_list, data);
+			}
 		}
 	}
 	else if (fork() == 0)

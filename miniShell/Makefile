@@ -11,7 +11,7 @@ UTILS = ft_strncpy is_instr ft_llinttoarray
 PARSER = remove_quotes syntax_validation parser clean_parsed expander\
 			string_trimming syntax_check expander_tool
 SETUP = init_and_setup_shell config_signal
-EXECUTION = execute_lineofcommand call_cmd cmd_binaries\
+EXECUTION = execute_lineofcommand call_cmd cmd_binaries buitin\
 
 NAME = minishell
 SRCS =	$(addsuffix .c, $(UTILS))\

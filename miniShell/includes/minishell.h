@@ -85,6 +85,10 @@ typedef struct s_data
 
 // EXECUTION
 
+	//buitin.c
+bool	builtin(t_statement *s, t_data *data);
+bool	is_builtin(t_statement *s);
+
 	//cmd_binaries
 char	*join_free(char *s1, char *s2);
 char	**get_paths(t_vlst *envp_lst);
@@ -97,6 +101,7 @@ void	exec_cmd(t_statement *current_node, t_data *data);
 void	exec_executables(t_statement *node, t_data *data);
 bool	is_valid_id(char *str);
 bool	builtin(t_statement *s, t_data *data);
+bool	is_builtin(t_statement *s);
 void	execute_lineofcommand(t_statement *statement_list, t_data *data);
 
 
