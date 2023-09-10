@@ -1,8 +1,12 @@
 #include "minishell.h"
 
-/*
-    Function that will return the size of the string without the quotes
-*/
+/**
+ * Calculates the size of a string without counting characters inside quotes.
+ *
+ * @param {char *} parsed - The input string to calculate the size for.
+ *
+ * @returns {size_t} The size of the string without characters inside quotes.
+ */
 size_t	size_without_quotes(char *parsed)
 {
 	size_t	size;
@@ -31,10 +35,13 @@ size_t	size_without_quotes(char *parsed)
 	return (size);
 }
 
-/*
-    Function that will return a string without the quotes
-    It will be used mainly with echo
-*/
+/**
+ * Creates a new string without characters inside quotes from the given input.
+ *
+ * @param {char *} parsed - The input string to remove characters from.
+ *
+ * @returns {char *} A new string with characters inside quotes removed.
+ */
 char	*str_without_quotes(char *parsed)
 {
 	size_t	i;

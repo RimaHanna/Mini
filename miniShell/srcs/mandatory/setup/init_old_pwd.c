@@ -1,8 +1,12 @@
 #include "minishell.h"
 
 /**
- * unset_var: builtin command with Rania
-*/
+ * @brief Initialize the value of the 'OLDPWD' environment variable.
+ * This function unsets the 'OLDPWD' variable, creates a new one with the value
+ * of the user's home directory, and saves it.
+ *
+ * @param head A pointer to the head of the environment variable linked list.
+ */
 
 //void	init_old_pwd(t_vlst **head)
 //{

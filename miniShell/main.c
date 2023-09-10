@@ -1,22 +1,17 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: rmouhoub <rmouhoub@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/25 17:04:58 by rmouhoub          #+#    #+#             */
-/*   Updated: 2023/08/25 18:41:36 by rmouhoub         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 long long g_last_exit_status = 0;
 
-/*
-	clean the variable list
-*/
+/**
+ * @brief Clean the variable list.
+ * 
+ * This function is responsible for cleaning up a linked list of variables.
+ * It iterates through the list and frees the memory associated with each node.
+ * Finally, it sets the head of the list to NULL.
+ * 
+ * @param head - A pointer to a pointer to the head of the variable list.
+ * @return void
+ */
 void	variable_lst_clean(t_vlst **head)
 {
 	t_vlst	*temp;
@@ -36,7 +31,12 @@ void	variable_lst_clean(t_vlst **head)
 	*head = NULL;
 }
 
-// rl_clear_history is from the history libray
+/**
+ * @brief Clears shell history, and cleans up environment and statement list.
+ *
+ * @param data A pointer to the shell data structure.
+ *             It holds environment variables and the statement list.
+ */
 void	destroy(t_data *data)
 {
 	rl_clear_history();
@@ -46,6 +46,15 @@ void	destroy(t_data *data)
 		parse_lst_clean(&data->head);
 }
 
+/**
+ * @brief Exit the shell with a specified exit status.
+ *
+ * This function terminates the shell and prints "exit" to standard output.
+ * It also updates the global exit status variable.
+ *
+ * @param exit_status The exit status code to use when exiting.
+ * @param data A pointer to the shell data, can be NULL.
+ */
 void	exit_shell(int exit_status, t_data *data)
 {
 	ft_putendl_fd("exit", STDOUT_FILENO);
@@ -55,10 +64,16 @@ void	exit_shell(int exit_status, t_data *data)
 	exit(g_last_exit_status);
 }
 
-/*
-	if there is more than one argument other than ./minishell ... 
-	we terminate_shell
-*/
+/**
+ * @brief Terminate the shell with an error message and exit status.
+ * 
+ * If there are multiple arguments other than ./minishell... we invoke 
+ * terminate_shell
+ * 
+ * @param data A pointer to the shell data structure (can be NULL).
+ * @param {char *} msg The error message to display.
+ * @param exit_status The exit status code to use when exiting the shell.
+ */
 void	terminate_shell(t_data *data, char *msg, int exit_status)
 {
 	if (data)
@@ -68,9 +83,13 @@ void	terminate_shell(t_data *data, char *msg, int exit_status)
 }
 
 /**
- * Init shell: configuration signals/ initialisation of all structures\list/
- * initialisation of oldpwd 
-*/
+ * @brief Initializes the shell, configures signals, and initializes data 
+ * structures.
+ *
+ * @param {int} argc Number of command-line arguments.
+ * @param {char *} argv[] Array of command-line arguments.
+ * @param {char **} env Array of environment variables.
+ */
 void    shell_loop(int argc, char *argv[], char **env)
 {
     char    *lineofcommand;
@@ -98,18 +117,8 @@ void    shell_loop(int argc, char *argv[], char **env)
     }
 }
 
-/*
-    Shell_loop(), that will loop, interpreting commands.
-    We will have three main part in our project
-        1) Read: Read the command from standard input.
-        2) Parse: Separate the command string into a program and arguments.
-        3) Execute: Run the parsed command.
-*/
 int main (int argc, char **argv, char **env)
 {
     shell_loop(argc, argv, env);
     return (0);
 }
-
-
-// I SHOULD TEST THE INVLAID SYNTAX

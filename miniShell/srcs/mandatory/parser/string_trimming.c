@@ -1,8 +1,18 @@
 #include "minishell.h"
-/*
-	trim characters specified in the set parameter from the beginning
-	and end of a string s1
-*/
+
+/**
+ * Removes leading and trailing whitespace characters specified in the 'set' 
+ * parameter from the given string 'line'.
+ * 
+ * @param line - The input string to be trimmed.
+ * @param set - A string containing characters to be 
+ * 				trimmed (e.g., " \t" trims spaces and tabs).
+ * 
+ * @return A dynamically allocated string containing the trimmed 'line'.
+ *         The caller is responsible for freeing the returned memory.
+ *         Returns NULL if 'line' or 'set' is NULL, or if memory allocation 
+ * 		   fails.
+ */
 char	*trim_whitespace_from_edges(char *line, char const *set)
 {
 	size_t	beg;
@@ -25,6 +35,13 @@ char	*trim_whitespace_from_edges(char *line, char const *set)
 	return (trimmed_str);
 }
 
+/**
+ * Reads a line of input from the user, trims leading and trailing whitespace,
+ * and returns the resulting string.
+ * 
+ * @return A dynamically allocated string containing the trimmed user input.
+ *         The caller is responsible for freeing the returned memory.
+ */
 char	*read_and_trim_lineofcommand(void)
 {
 	char	*line;

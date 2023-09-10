@@ -1,10 +1,13 @@
 #include <minishell.h>
 
-/*
-    Function checking is the character exist in the string
-    return true if the character exist in the string
-    return false if the character doesn't exist in the string
-*/
+/**
+ * Checks if a character exists in the given string.
+ *
+ * @param {const char *} str - The string to search in.
+ * @param {char} chr - The character to look for.
+ *
+ * @return {bool} True if the character exists in the string, false otherwise.
+ */
 bool	is_instr(const char *str, char chr)
 {
 	int i;

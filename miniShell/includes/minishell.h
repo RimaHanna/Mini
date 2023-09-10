@@ -86,6 +86,7 @@ typedef struct s_data
 // EXECUTION
 
 	//buitin.c
+bool	is_valid_id(char *str);
 bool	builtin(t_statement *s, t_data *data);
 bool	is_builtin(t_statement *s);
 
@@ -98,8 +99,6 @@ void	v_lstadd_back(t_vlst **head, t_vlst *new);
 int		save_user_vars(char *statement, t_vlst **head, bool to_export);
 int		call_cmd_echo(t_statement *s);
 
-
-
 	//cmd_binaries
 char	*join_free(char *s1, char *s2);
 char	**get_paths(t_vlst *envp_lst);
@@ -110,10 +109,7 @@ void	cmd_binaries(t_statement *statement, t_data *data);
 	//ececute_lineofcommand.c
 void	exec_cmd(t_statement *current_node, t_data *data);
 void	exec_executables(t_statement *node, t_data *data);
-bool	is_valid_id(char *str);
 void	execute_lineofcommand(t_statement *statement_list, t_data *data);
-
-
 
 // PARSER
 	// clean_parsed.c
@@ -136,7 +132,6 @@ void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
 int		expanded_size(char *input, t_data *data);
 char	*expander(char *line, t_data *data);
 
-
 	// parser.c
 size_t		get_argc(char **parsed);
 bool		is_spaces(char c);
@@ -155,7 +150,6 @@ char		*str_without_quotes(char *parsed);
 	// string_trimming.c
 char		*trim_whitespace_from_edges(char *line, char const *set);
 char		*read_and_trim_lineofcommand(void);
-
 
 	// syntax_check
 bool		invalid_pipe_syntax(char *line);
@@ -197,6 +191,5 @@ void		destroy(t_data *data);
 void		exit_shell(int exit_status, t_data *data);
 void		terminate_shell(t_data *data, char *msg, int exit_status);
 void    	shell_loop();
-
 
 #endif

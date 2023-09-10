@@ -2,8 +2,32 @@
 
 extern long long g_last_exit_status;
 
+
+/*
+	Cette fonction vérifie si une chaîne de caractères est une variable 
+	d'environnement valide en fonction de certains critères. Elle est utilisée 
+	pour filtrer les noms de variables d'environnement invalides.
+*/
+bool	is_valid_id(char *str)
+{
+	size_t	i;
+
+	i = 0;
+	if (streq(str, "="))
+		return (false);
+	while (str[i] && str[i] != '=')
+	{
+		if (is_digit(str[i]) || str[i] == '!' || str[i] == '@'
+			|| str[i] == '{' || str[i] == '}' || str[i] == '-')
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+
 /**
- * @description Executes a statement only if it is built-in
+ * @brief Executes a statement only if it is built-in
  * Returns (true) if the statement is a built-in command and was executed,
  * (false) otherwise
  * @param {t_statement *} s, pointer to statement

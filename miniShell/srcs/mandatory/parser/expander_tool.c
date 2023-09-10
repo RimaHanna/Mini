@@ -1,16 +1,19 @@
 #include "minishell.h"
 
-/*
-	single_dollar Function:
-	This function checks if a dollar sign $ should be treated as a variable
-	or not.
-	It returns true if the dollar sign should be treated as a variable, if 
-	it's followed by a space or double quotes (").
-	A dollar sign ($) in shell scripts typically indicates the start of a 
-	variable ex: $HOME (it replace home with the path). However, if it 
-	immediately follows a double quote ("), it's treated as a literal character 
-	within a string, preventing variable expansion within that string.
-*/
+/**
+ * Determines if a dollar sign '$' should be treated as a variable or not.
+ * It returns true if the dollar sign should be treated as a variable, which
+ * occurs when it's followed by a space or double quotes (").
+ * In shell scripts, a dollar sign typically indicates the start of a variable,
+ * for example: $HOME (it replaces 'HOME' with the corresponding path). However,
+ * if it immediately follows a double quote (") character, it's treated as a
+ * literal character within a string, preventing variable expansion within that
+ * string.
+ *
+ * @param {char *} input_at_i - The input character at the current position.
+ * @returns {bool} True if the dollar sign should be treated as a variable,
+ *                  otherwise false.
+ */
 bool	single_dollar(char *input_at_i)
 {
 	return ((!input_at_i[1]
@@ -18,18 +21,19 @@ bool	single_dollar(char *input_at_i)
 			|| input_at_i[1] == '\"'));
 }
 
-
-/*
-	These functions retrieve the value associated with a given variable name 
-	from a linked list (likely representing environment variables)
-	var_name: A string representing the name of the variable whose value 
-	you want to retrieve.
-	The function takes the var_name as input, which is the name of the variable 
-	you want to find the value for.
-	It iterates through the linked list (envp_lst) to find a node where the 
-	var_name matches the var_name stored in the list node (temp->var_name).
-*/
-
+/**
+ * Retrieves the value associated with a given variable name from a linked list,
+ * typically representing environment variables.
+ *
+ * @param var_name - A string representing the name of the variable whose value
+ *                  you want to retrieve.
+ * @param head     - A pointer to the head of the linked list containing the
+ *                  environment variables.
+ *
+ * @return         - A pointer to the value associated with the specified
+ *                  variable name. Returns NULL if the variable name is not 
+ *                  found in the linked list.
+ */
 char	*get_fromvlst(char *var_name, t_vlst **head)
 {
 	t_vlst	*temp;
@@ -44,6 +48,19 @@ char	*get_fromvlst(char *var_name, t_vlst **head)
 	return (NULL);
 }
 
+/**
+ * Retrieves the value associated with a given variable name from the
+ * environment variable linked list stored in the 't_data' structure.
+ *
+ * @param var_name - A string representing the name of the variable whose value
+ *                  you want to retrieve.
+ * @param data     - A pointer to the 't_data' structure containing the
+ *                  environment variable linked list.
+ *
+ * @return         - A pointer to the value associated with the specified
+ *                  variable name. Returns NULL if the variable name is not 
+ *                  found in the linked list.
+ */
 char	*get_varvalue_fromvlst(char *var_name, t_data *data)
 {
 	char	*var_value;
@@ -53,16 +70,18 @@ char	*get_varvalue_fromvlst(char *var_name, t_data *data)
 	return (var_value);
 }
 
-/*
-	This function calculates the size of the expanded input by handling 
-	variable expansion, taking care of different cases.
-	It identifies variable names following the $ character and expands
-	them by looking up their values in a list (likely representing environment 
-	variables).
-	ft_substr takes an input string s, extracts a substring starting from 
-	the specified start index with a maximum length of len, and returns a 
-	new dynamically allocated string containing the extracted substring
-*/
+/**
+ * Calculates the size of the expanded input by handling variable expansion,
+ * identifying variable names following the '$' character, and expanding them 
+ * by looking up their values in a list, typically representing environment 
+ * variables.
+ *
+ * @param input_at_i The input string at the current index.
+ * @param i Pointer to the current index within the input string.
+ * @param data Pointer to the shell's data structure.
+ *
+ * @return The size of the expanded input or 0 if no expansion is needed.
+ */
 size_t	expand_size(char *input_at_i, size_t *i, t_data *data)
 {
 	size_t	var_size;
@@ -90,30 +109,40 @@ size_t	expand_size(char *input_at_i, size_t *i, t_data *data)
 }
 
 
-/*
-	This function handles the expansion of a variable and copies its value into 
-	the expanded input.
-	The function begins by incrementing i to move past the dollar sign ($) 
-	that triggered the variable expansion. So it means that the function starts 
-	with i pointing to the dollar sign ($) in the input string
-	The function checks if the character immediately following the dollar 
-	sign is either the end of the input string or a space. If so, it means 
-	that the dollar sign should be treated as a literal character, not the 
-	start of a variable. In this case, it writes the dollar sign as is to 
-	expanded_input_at_i and returns 1 to indicate that one character has 
-	been processed.
-	If the character following the dollar sign is not a space or the end of the 
-	string, it means there is a variable to expand.
-	The function calculates the size of the variable name by iterating through 
-	the characters until it encounters a space, double quote ("), another 
-	dollar sign ($), or the end of the string.
-	It then extracts the variable name and looks up its value in the linked 
-	list of variables (envp_lst) using the get_varvalue_fromvlst function.
-	If a value is found for the variable, the function copies each character 
-	of the value to expanded_input_at_i, incrementing j and k accordingly.
-	This effectively replaces the variable reference in the input string with 
-	its actual value.
-*/
+/**
+ * Expands a variable reference in the input string and copies its value into  
+ * the expanded input.
+ * 
+ * This function starts with 'i' pointing to the dollar sign ($) in the input 
+ * string. It checks if the character immediately following the dollar sign is 
+ * either the end of the input string or a space. If so, it treats the dollar  
+ * sign as a literal character and writes it to 'expanded_input_at_i',  
+ * returning 1 to indicate processing of one character.
+ * 
+ * If the character following the dollar sign is not a space or the end of the 
+ * string, it means there is a variable to expand. The function calculates the  
+ * size of the variable name by iterating through the characters until it 
+ * encounters a space, double quote ("), another dollar sign ($), or the end
+ * of the string.
+ * 
+ * It then extracts the variable name and looks up its value in the linked list  
+ * of variables (envp_lst) using the 'get_varvalue_fromvlst' function.  
+ * If a value is found for the variable, the function copies each character  
+ * of the value to 'expanded_input_at_i', incrementing 'j' and 'k' accordingly.  
+ * This effectively replaces the variable reference in the input string with 
+ * its actual value.
+ * 
+ * @param expanded_input_at_i Pointer to the location in the expanded input  
+ *                           where the variable value will be copied.
+ * @param input               The input string.
+ * @param i                   Pointer to the current position in the input
+ * 							 string.
+ * @param data                Pointer to the shell data structure containing 
+ *                           environment variables.
+ * 
+ * @return                    The number of characters copied 
+ * 							 to 'expanded_input_at_i'.
+ */
 size_t	expand_variable(char *expanded_input_at_i, char *input,
 	size_t *i, t_data *data)
 {

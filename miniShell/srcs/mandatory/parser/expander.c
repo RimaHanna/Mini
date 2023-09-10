@@ -2,21 +2,19 @@
 
 extern long long	g_last_exit_status;
 
-/*
-	This code is essential for expanding variables and managing the 
-	exit status within a minishell project, allowing users to work with 
-	environment variables and special shell variables like $?
+/**
+ * This code is essential for expanding variables and managing the exit status 
+ * within a minishell project, allowing users to work with environment variables 
+ * and special shell variables like $?
+ 
 */
 
-
-/*
-	This function calculates the size (number of digits) of the exit status 
-	converted to a string.
-	1) Change the exit_status from an integer to an array with ft_llinttoarray 
-		and save it in an array
-	2) Bring the size of the array with ft_strlen
-	3) Return the size
-*/
+/**
+ * Calculates the size (number of digits) of the exit status converted to a 
+ * string.
+ *
+ * @return The size of the exit status string.
+ */
 size_t	exit_status_size(void)
 {
 	char	*exit_status;
@@ -29,10 +27,15 @@ size_t	exit_status_size(void)
 }
 
 
-/*
-	This function expands the exit status ($?) by converting it to a string
-	and copying it into the expanded input string.
-*/
+/**
+ * Expands the exit status ($?) by converting it to a string and copying it
+ * into the expanded input string.
+ *
+ * @param expanded_input_at_i - Pointer to the expanded input string where the
+ *                              exit status will be copied.
+ * @param i - Pointer to the index indicating the current position in the input.
+ * @return The length of the expanded exit status string that was copied.
+ */
 size_t	expand_exit_status(char *expanded_input_at_i, size_t *i)
 {
 	char	*exit_status;
@@ -50,6 +53,14 @@ size_t	expand_exit_status(char *expanded_input_at_i, size_t *i)
 	return (j);
 }
 
+/**
+ * Initializes variables used for parsing input.
+ *
+ * @param i - A pointer to the index variable.
+ * @param size - A pointer to the size variable.
+ * @param in_quotes - A pointer to the flag indicating if within single quotes.
+ * @param in_dquotes - A pointer to the flag indicating if within double quotes.
+ */
 void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes)
 {
 	*i = 0;
@@ -58,11 +69,18 @@ void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes)
 	*in_dquotes = false;
 }
 
-/*
-	This function calculates the total size of the expanded input by 
-	iterating through the input string.
-	It takes into account quotes and variables to calculate the final size.
-*/
+/**
+ * Calculates the total size of the expanded input by iterating through the 
+ * input string.
+ * This function takes into account quotes and variables to determine the 
+ * final size.
+ *
+ * @param {char *} input - The input string to expand and calculate the size 
+ * for.
+ * @param {t_data *} data - A pointer to shell data, which may be used for 
+ * variable expansion.
+ * @returns {int} The total size of the expanded input.
+ */
 int	expanded_size(char *input, t_data *data)
 {
 	size_t	i;
@@ -91,26 +109,37 @@ int	expanded_size(char *input, t_data *data)
 	return (size);
 }
 
-
-/*
-	This is the main function responsible for expanding an input command line.
-	It iterates through the input, handling quotes and variables, and creates 
-	an expanded input string.
-	Example:
-	Suppose you have the following input string:
-	"Hello, $NAME! Your age is $AGE years old."
-	Let's assume that:
-	$NAME is assigned the value "John".
-	$AGE is assigned the value 30.
-	Expander function will perform variable expansion and return the following 
-	expanded string:
-	"Hello, John! Your age is 30 years old."
-	CODE EXPLANATION:
-	input: HELLO $USER
-	output: HELLO rima
-	in the expander code it will be filling HELLO, when it reach the $sign,
-	the rest of the string will be filled in function get_varvalue_fromvlst
-*/
+/**
+ * Expand an input command line by replacing variables and handling quotes.
+ *
+ * This function iterates through the input string, handling single and double 
+ * quotes as well as variables, and creates an expanded input string. 
+ * Variables are identified by the '$' sign followed by their
+ * names, e.g., $NAME.
+ *
+ * @param input - The input command line to expand.
+ * @param data - A pointer to the shell's data structure, which contains 
+ * variable values.
+ *
+ * @return A newly allocated expanded input string.
+ *
+ * @example
+ * Suppose you have the following input string:
+ * "Hello, $NAME! Your age is $AGE years old."
+ * Let's assume that:
+ * $NAME is assigned the value "John".
+ * $AGE is assigned the value 30.
+ * The `expander` function will perform variable expansion and return the  
+ * following expanded string:
+ * "Hello, John! Your age is 30 years old."
+ *
+ * @code
+ * // Example usage:
+ * char *input = "HELLO $USER";
+ * char *expanded = expander(input, &shell_data);
+ * // expanded will contain "HELLO rima" based on variable values.
+ * @endcode
+ */
 char	*expander(char *input, t_data *data)
 {
 	size_t	i;

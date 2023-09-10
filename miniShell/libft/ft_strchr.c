@@ -12,6 +12,12 @@
 
 #include "libft.h"
 
+/**
+ * @brief Searches for the character (c) within the string (s)
+ * @param {char *} const s, the string to search into
+ * @param {int} c, the character to find within the string
+ * @return {char *} The position of the character if found, NULL otherwise
+*/
 char	*ft_strchr(const char *s, int c)
 {
 	while (*s != (char)c)

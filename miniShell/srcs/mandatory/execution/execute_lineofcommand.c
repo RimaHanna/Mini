@@ -12,7 +12,7 @@ extern long long g_last_exit_status;
 void	exec_cmd(t_statement *current_node, t_data *data)
 {
 	signal(SIGINT, child_signals);
-	if (current_node->operator == PIPE)
+	if (current_node->operator == PIPE_OP)
 		exec_pipe(current_node, data);
 	else if (current_node->operator == NONE)
 		exec_executables(current_node, data);
@@ -31,29 +31,6 @@ void	exec_executables(t_statement *node, t_data *data)
 	if (builtin(node, data))
 		return ;
 	cmd_binaries(node, data);
-}
-
-
-/*
-	Cette fonction vérifie si une chaîne de caractères est une variable 
-	d'environnement valide en fonction de certains critères. Elle est utilisée 
-	pour filtrer les noms de variables d'environnement invalides.
-*/
-bool	is_valid_id(char *str)
-{
-	size_t	i;
-
-	i = 0;
-	if (streq(str, "="))
-		return (false);
-	while (str[i] && str[i] != '=')
-	{
-		if (is_digit(str[i]) || str[i] == '!' || str[i] == '@'
-			|| str[i] == '{' || str[i] == '}' || str[i] == '-')
-			return (false);
-		i++;
-	}
-	return (true);
 }
 
 /*

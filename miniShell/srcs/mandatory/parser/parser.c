@@ -27,10 +27,6 @@
 	tokens.
 */
 
-/* 
-	get_argc: Calculates the number of elements (arguments) in an array of 
-	strings.
-*/
 /*
 // FUNCTION DON"T GET THE ARGC DEVISED BY STATEMENT
 size_t	get_argc(char **parsed)
@@ -45,6 +41,15 @@ size_t	get_argc(char **parsed)
 }
 */
 
+/**
+ * Get the number of non-operator arguments in an array of strings.
+ * 
+ * This function iterates through an array of strings and counts the number of
+ * elements that are not single-character operators. It returns the count.
+ *
+ * @param parsed - An array of strings to analyze.
+ * @return The count of non-operator arguments in the array.
+ */
 size_t	get_argc(char **parsed)
 {
 	size_t	i;
@@ -56,6 +61,15 @@ size_t	get_argc(char **parsed)
 	return i;
 }
 
+/**
+ * Check if a character is a whitespace character.
+ * 
+ * This function determines whether a given character is a whitespace character,
+ * including space, tab, newline, vertical tab, form feed, or carriage return.
+ *
+ * @param c - The character to check.
+ * @return True if the character is a whitespace character, otherwise false.
+ */
 bool	is_spaces(char c)
 {
 	if (c == '\t' || c == '\n' || c == '\v'
@@ -64,9 +78,13 @@ bool	is_spaces(char c)
 	return (false);
 }
 
-/*
-	streq: Compares two strings and returns true if they are equal.
-*/
+/**
+ * Checks if two strings are equal.
+ *
+ * @param {char*} str1 - The first string to compare.
+ * @param {char*} str2 - The second string to compare.
+ * @return {bool} True if the strings are equal, false otherwise.
+ */
 bool	streq(char *str1, char *str2)
 {
 	size_t	i;
@@ -83,10 +101,13 @@ bool	streq(char *str1, char *str2)
 	return (true);
 }
 
-/*
-	get_operator: Returns the corresponding operator enum based on the input
-	string. Also frees the input string.
-*/
+/**
+ * Get the operator type corresponding to a given operator string.
+ *
+ * @param {char} *operator - The operator string to be checked.
+ *
+ * @returns {t_operator} - The operator type determined from the string.
+ */
 t_operator	get_operator(char *operator)
 {
 	t_operator	op;
@@ -109,10 +130,16 @@ t_operator	get_operator(char *operator)
 	return (op);
 }
 
-/*
-	p_new_node: Creates and initializes a new t_statement node.
-
-*/
+/**
+ * @brief Create and initialize a new statement node.
+ *
+ * This function allocates memory for a new statement node, sets its argument
+ * count (argc), initializes the argument vector (argv), sets the operator to
+ * NONE, and sets the next pointer to NULL.
+ *
+ * @param argc The number of arguments for the new statement.
+ * @return A pointer to the newly created statement node.
+ */
 t_statement	*p_new_node(int argc)
 {
 	t_statement	*new_node;
@@ -125,17 +152,20 @@ t_statement	*p_new_node(int argc)
 	return (new_node);
 }
 
-/*
-	Function get_nb_statements:
-	Calculates the number of statements (commands) based on input text.
-	Considers OPERATORS "|<>" , QUOTES "\'\"" , and spaces to determine
-	where statements end.
-	Handles cases where quotes are used to group characters.
-	EXAMPLE:
-	get_nb_statments("ls -l | cat -e")
-	return result 2 (1 until the operator and one until the NULL)
-	But in order that it put the right result it should be between quote
-*/
+/**
+ * Calculates the number of statements (commands) based on input text.
+ * Considers OPERATORS "|<>" , QUOTES "\'\"" , and spaces to determine
+ * where statements end.
+ *
+ * @param {char *} input - The input text to analyze.
+ *
+ * @returns {size_t} The number of statements found in the input text.
+ *
+ * @example
+ * // Returns 2 (1 until the operator and one until the NULL)
+ * // But in order that it put the right result it should be between quotes.
+ * size_t result = get_nb_statements("ls -l | cat -e");
+ */
 size_t get_nb_statements(char *input)
 {
     size_t count;   // Stores the number of statements
@@ -145,10 +175,8 @@ size_t get_nb_statements(char *input)
     count = 0;      // Initialize the count to zero
     flag = false;   // Initialize the flag to false
     quotes = false; // Initialize the quotes flag to false
-//printf("l:134 get_nb_statements the input is [%s]\n", input);
     while (*input) // Loop through each character in the input string
     {
-//printf("l:137 get_nb_statement the character is [%c]\n", *input);
         // If the current character is an operator, increment the count
         if (is_instr(OPERATORS, *input))
             count++;
@@ -173,53 +201,56 @@ size_t get_nb_statements(char *input)
 
         input++; // Move to the next character in the input string
     }
-//printf("l:158 get_nb_statments [%ld]\n", count);
     return (count); // Return the final count of statements
 }
 
-/*
-	Function get_token_len:
-	Calculates the length of a token (argument or operator) starting
-	from a given position.
-	Takes care of handling operators and spaces, as well as quoted substrings.
-*/
+/**
+ * Calculates the length of a token (argument or operator) starting from a 
+ * given position.
+ * Handles operators, spaces, and quoted substrings correctly.
+ *
+ * @param {char *} input_at_i - Pointer to the input string, starting from the 
+ * desired position.
+ * @return {size_t} - The length of the token.
+ */
 size_t get_token_len(char *input_at_i)
 {
-    size_t i;        // Index variable
+    size_t i;
     char quotes;     // Character to track the opening quote type
 
-    i = 0;           // Initialize the index to zero
+    i = 0;
     if (is_instr(OPERATORS, input_at_i[i])) // Check if the character is an operator
     {
         if (input_at_i[i] == input_at_i[i + 1]) // If it's a double operator
             return 2; // Return a length of 2
         return 1; // If it's a single operator, return a length of 1
     }
-    
-    while (input_at_i[i] && !is_spaces(input_at_i[i]) && !is_instr(OPERATORS, input_at_i[i]))
+    while (input_at_i[i] && !is_spaces(input_at_i[i]) 
+		&& !is_instr(OPERATORS, input_at_i[i]))
     {
         // Loop while the current character exists, is not a space, and is not an operator
         if (is_instr(QUOTES, input_at_i[i]))
         {
-            quotes = input_at_i[i++]; // Store the opening quote character
+            quotes = input_at_i[i++];
             while (input_at_i[i] && input_at_i[i] != quotes)
-                i++; // Increment i until the closing quote character is found
+                i++;
         }
-        i++; // Move to the next character
+        i++;
     }
-//printf("l:194 get_token_len = [%ld] at letter: [%c]\n", i, *input_at_i);
-    return i; // Return the length of the token
+    return i;
 }
 
 
-/*
-	Function parse_input:
-	Splits the input into an array of strings (tokens) representing statements 
-	and operators.
-	Uses the get_nb_statements and get_token_len functions to determine the 
-	length of each token.
-	Handles quoted substrings correctly.
-*/
+/**
+ * @function parse_input
+ * @brief Splits the input into an array of strings (tokens) representing 
+ * 		  statements and operators.
+ *        Handles quoted substrings correctly.
+ * 		  Uses the get_nb_statements and get_token_len functions to determine 
+ * 		  the length of each token.
+ * @param input - The input string to be parsed.
+ * @return An array of strings (tokens) representing the parsed input.
+ */
 char **parse_input(char *input)
 {
     size_t i;       // Index for iterating through input
@@ -228,8 +259,8 @@ char **parse_input(char *input)
     size_t j;       // Index for copying characters within a token
     char **parsed;  // Array to store parsed tokens
 
-    i = 0;          // Initialize index for input to 0
-    k = 0;          // Initialize index for parsed array to 0
+    i = 0;
+    k = 0;
     // Allocate memory for the parsed array to hold the maximum possible number of tokens
     parsed = malloc((get_nb_statements(input) + 1) * sizeof(char *));
     while (input[i])
@@ -258,36 +289,32 @@ char **parse_input(char *input)
     return (parsed); // Return the array of parsed tokens
 }
 
-
-/*
-	Function parser:
-	The main parser function that processes the input text to create a linked 
-	list of t_statement nodes.
-	Calls parse_input to tokenize the input.
-	Creates a new node using p_new_node and assigns the head of the linked 
-	list (head) to it.
-	Iterates through the parsed tokens:
-	Fills the argv array of the current node with arguments (without quotes) 
-	until an operator is encountered.
-	Sets the last element of argv to NULL.
-	If there are more tokens, assigns the operator and creates a new node for 
-	the next statement.
-	Sets the next of the last node to NULL.
-	Frees the parsed array.
-	Returns the head of the linked list.
-	EXAMPLE:
-	Function call:
-	t_statement *result = parser("ls -l | grep 'file.txt'");
-	Return Value (Linked List of Statements):
-	Resulting Linked List of Statements:
-1. Command: "ls"
-   - Arguments: ["-l"]
-   - Operator: PIPE_OP
-
-2. Command: "grep"
-   - Arguments: ["'file.txt'"]
-   - Operator: NONE
-*/
+/**
+ * Parses the input text to create a linked list of t_statement nodes.
+ *
+ * This function tokenizes the input, creates a new node using p_new_node, and
+ * assigns the head of the linked list (head) to it. It then iterates through
+ * the parsed tokens, filling the argv array of the current node with arguments
+ * (without quotes) until an operator is encountered. The last element of argv
+ * is set to NULL. If there are more tokens, the operator is assigned, and a new
+ * node is created for the next statement. The next of the last node is set to
+ * NULL. Finally, the parsed array is freed, and the head of the linked list is
+ * returned.
+ *
+ * @param input - The input text to be parsed.
+ *
+ * @return A pointer to the head of the linked list of t_statement nodes.
+ *
+ * @example
+ * t_statement *result = parser("ls -l | grep 'file.txt'");
+ * Resulting Linked List of Statements:
+ * 1. Command: "ls"
+ *    - Arguments: ["-l"]
+ *    - Operator: PIPE_OP
+ * 2. Command: "grep"
+ *    - Arguments: ["'file.txt'"]
+ *    - Operator: NONE
+ */
 /*
 // PARSER 27 lines
 t_statement	*parser(char *input)
@@ -319,7 +346,6 @@ t_statement	*parser(char *input)
 	return (head);
 }
 */
-
 
 // PARSER WITH PRINTF
 t_statement	*parser(char *input)

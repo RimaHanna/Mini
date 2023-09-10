@@ -1,9 +1,14 @@
 #include "minishell.h"
 
-
-/*
-	This function calculates the number of digits in a given long long integer.
-*/
+/**
+ * @brief Calculates the number of digits in a given long long integer.
+ *
+ * This function calculates and returns the number of digits in a long long 
+ * integer 'n'.
+ *
+ * @param n The long long integer to calculate the number of digits for.
+ * @return The number of digits in 'n'.
+ */
 long long	ft_digits(long long n)
 {
 	long long	digits;
@@ -19,10 +24,16 @@ long long	ft_digits(long long n)
 	return (digits);
 }
 
-/*
-	ft_lltoa Function:
-	This function converts a long long integer to a string.
-*/
+/**
+ * @brief Converts a long long integer to a string.
+ *
+ * This function converts a long long integer 'n' to a string and returns 
+ * the result.
+ *
+ * @param n The long long integer to convert to a string.
+ * @return A dynamically allocated string containing the converted value of 'n'.
+ *         The caller is responsible for freeing the allocated memory.
+ */
 
 char	*ft_llinttoarray(long long n)
 {
