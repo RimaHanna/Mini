@@ -2,13 +2,14 @@
 
 extern long long g_last_exit_status;
 
-// exec_pipe: WITH RANIA
-// exec_redirects: WITH RANIA
-// cmd_binaries: WITH RANIA
-/*
-	Verification du type d'opérateur de l'instruction (1-PIPE, 2-NONE, ou autre)
-	et appelle la fonction appropriée pour exécuter l'instruction
-*/
+/**
+ * Verifies the type of operator in the instruction (1-PIPE, 2-NONE, or other)
+ * and calls the appropriate function to execute the instruction.
+ *
+ * @param current_node - Pointer to the statement node to be executed.
+ * @param data - Pointer to the shell data structure containing environment 
+ * variables.
+ */
 void	exec_cmd(t_statement *current_node, t_data *data)
 {
 	signal(SIGINT, child_signals);
@@ -21,11 +22,16 @@ void	exec_cmd(t_statement *current_node, t_data *data)
 	exit(g_last_exit_status);
 }
 
-// SUITE FILE: cmd_binaries.c
-/*
-	if it is a builtin commande it will return true directly and it will 
-	execute the builtin command
-*/
+/**
+ * @brief Execute executable commands.
+ *
+ * This function checks if the provided command is a built-in command. If it
+ * is a built-in command, it directly executes the command. Otherwise, it
+ * executes external binaries.
+ *
+ * @param node  A pointer to the command node to be executed.
+ * @param data  A pointer to the shell data structure.
+ */
 void	exec_executables(t_statement *node, t_data *data)
 {
 	if (builtin(node, data))
@@ -33,43 +39,45 @@ void	exec_executables(t_statement *node, t_data *data)
 	cmd_binaries(node, data);
 }
 
-/*
-	Cette fonction est responsable de l'exécution d'une ligne de commande. 
-	Si la ligne de commande ne contient qu'une seule instruction, elle vérifie 
-	d'abord si cette instruction est une commande interne en appelant builtin. 
-	Si c'est le cas, elle exécute la commande interne. Sinon, elle effectue un 
-	fork pour créer un nouveau processus et exécuter l'instruction à 
-	l'intérieur de ce processus. Ensuite, elle attend que le processus enfant 
-	se termine. Le statut de sortie est stocké dans temp_status, et si le 
-	processus enfant s'est terminé normalement, elle met à jour 
-	g_last_exit_status avec le code de sortie.
-	La raison pour laquelle elle ne fait pas de fork pour une seule instruction 
-	est l'efficacité. Les forks sont coûteux en termes de ressources système, 
-	car ils créent un nouveau processus complet. Pour une seule instruction, 
-	il est plus efficace de l'exécuter directement dans le même processus 
-	parent, à moins qu'il ne soit nécessaire de créer un nouveau processus 
-	pour des raisons de séparation ou d'isolation. Les commandes internes du 
-	shell, telles que cd ou export, peuvent être exécutées efficacement dans 
-	le même processus parent sans avoir besoin de créer un processus enfant 
-	supplémentaire. C'est pourquoi la condition est là pour éviter le coût 
-	inutile d'un fork lorsque cela n'est pas nécessaire.
-	signal: It sets up a signal handler for the child process. Specifically, 
-	it catches the SIGINT signal, which typically corresponds to pressing 
-	Ctrl+C in the terminal.
-	waitpid: After executing either the single statement or multiple statements,
-	the parent process waits for any child process to finish using 
-	waitpid (it listen the child process). 
-	This function suspends the parent process until a child process terminates. 
-	The status of the terminated process is stored in temp_status.
-	WTERMSIG: the last if condition checks if the child process terminated 
-	normally (not due to a signal) using WTERMSIG. If it terminated normally, 
-	it updates the global variable g_last_exit_status with the exit status of 
-	the child process, which is typically the exit code of the last executed 
-	command.
-	Shifting temp_status to the right by 8 bits means that we are discarding 
-	the lower 8 bits of temp_status and keeping only the higher bits, which 
-	correspond to the exit status of the child process.
-*/
+/**
+ * Execute a line of shell command(s).
+ * 
+ * This function is responsible for executing a line of shell command(s).
+ * If the command line contains only a single instruction, it first checks if 
+ * that instruction is an internal command by calling the `is_builtin` function. 
+ * If it is an internal command, it executes the internal command. 
+ * Otherwise, it forks to create a new process and runs the instruction inside 
+ * that process. Afterward, it waits for the child process to terminate. The exit 
+ * status of the child process is stored in `temp_status`, and if the child 
+ * process terminated normally, it updates the global variable `g_last_exit_status` 
+ * with the exit status.
+ * 
+ * The reason for not forking for a single instruction is efficiency. Forking is 
+ * costly in terms of system resources because it creates a complete new process. 
+ * For a single instruction, it's more efficient to run it directly within the 
+ * same parent process unless it's necessary to create a new process for 
+ * separation or isolation reasons. Shell's internal commands like `cd` or `export` 
+ * can be executed efficiently within the same parent process without the need for 
+ * an additional child process. This is why the condition is there to avoid the 
+ * unnecessary cost of forking when it's not required.
+ * 
+ * @param statement_list - The list of parsed shell statements to execute.
+ * @param data - The data structure containing shell environment and state.
+ * @returns void
+ * 
+ * @remarks
+ * - This function sets up a signal handler for the child process to catch the
+ *   SIGINT signal, which corresponds to pressing Ctrl+C in the terminal.
+ * - It uses the `waitpid` function to suspend the parent process until a child
+ *   process terminates. The status of the terminated process is stored in 
+ *   `temp_status`.
+ * - The `WTERMSIG` macro is used to check if the child process terminated 
+ *   normally (not due to a signal). If it terminated normally, this function 
+ *   updates the global variable `g_last_exit_status` with the exit status of 
+ *   the child process. Shifting `temp_status` to the right by 8 bits is done 
+ *   to discard the lower 8 bits of `temp_status` and keep only the higher bits, 
+ *   which correspond to the exit status of the child process.
+ */
 void	execute_lineofcommand(t_statement *statement_list, t_data *data)
 {
 	int		temp_status;

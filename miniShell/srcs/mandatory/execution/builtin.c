@@ -2,12 +2,15 @@
 
 extern long long g_last_exit_status;
 
-
-/*
-	Cette fonction vérifie si une chaîne de caractères est une variable 
-	d'environnement valide en fonction de certains critères. Elle est utilisée 
-	pour filtrer les noms de variables d'environnement invalides.
-*/
+/**
+ * Checks if a string is a valid environment variable name based on certain criteria.
+ * Used to filter out invalid environment variable names.
+ *
+ * @param {char *} str - The string to be checked.
+ *
+ * @returns {bool} Returns true if the string is a valid environment variable name,
+ *                 otherwise false.
+ */
 bool	is_valid_id(char *str)
 {
 	size_t	i;
@@ -24,7 +27,6 @@ bool	is_valid_id(char *str)
 	}
 	return (true);
 }
-
 
 /**
  * @brief Executes a statement only if it is built-in

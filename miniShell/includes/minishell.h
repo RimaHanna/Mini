@@ -83,6 +83,29 @@ typedef struct s_data
 	t_statement	*head;
 }				t_data;
 
+//BINARIES_PIPES_REDIRECTS
+	//cmd_binaries
+void	cmd_not_found(char *cmd_name);
+char	**get_paths(t_vlst *envp_lst);
+char	*get_bin_path(char *cmd, char **paths);
+void	exit_and_free_args(char **paths, char *cmd, int exit_status);
+void	cmd_binaries(t_statement *statement, t_data *data);
+
+	//exec_pipe
+void	left_side(t_statement *nd, t_data *data, int pdes[2]);
+void	right_side(t_statement *nd, t_data *data, int pdes[2]);
+void	exec_pipe(t_statement *node, t_data *data);
+
+	//exec_redirects
+void	redirect_input_until(t_statement *node);
+void	redirect_input(t_statement *node);
+void	redirect_output(t_statement *node);
+void	exec_redirects(t_statement *node, t_data *data);
+
+
+	//exec_redirects
+
+
 // EXECUTION
 
 	//buitin.c
@@ -98,13 +121,6 @@ t_vlst	*v_lstlast(t_vlst *node);
 void	v_lstadd_back(t_vlst **head, t_vlst *new);
 int		save_user_vars(char *statement, t_vlst **head, bool to_export);
 int		call_cmd_echo(t_statement *s);
-
-	//cmd_binaries
-char	*join_free(char *s1, char *s2);
-char	**get_paths(t_vlst *envp_lst);
-char	*get_bin_path(char *cmd, char **paths);
-void	exit_and_free_args(char **paths, char *cmd, int exit_status);
-void	cmd_binaries(t_statement *statement, t_data *data);
 
 	//ececute_lineofcommand.c
 void	exec_cmd(t_statement *current_node, t_data *data);
@@ -176,14 +192,16 @@ t_vlst		*init_envp_lst(char **envp);
 void		init_shell(char **envp, t_data *data, t_statement **statement_list);
 
 	//init_old_pwd.c
-void	init_old_pwd(t_vlst **head);
+void		init_old_pwd(t_vlst **head);
 
 // UTILS
 long long	ft_digits(long long n);
 char		*ft_llinttoarray(long long n);
 char		*ft_strncpy(char *dest, const char *src, size_t n);
-bool	is_digit(int c);
+bool		is_digit(int c);
 bool		is_instr(const char *str, char chr);
+char		*join_free(char *s1, char *s2);
+
 
 // MAIN
 void		variable_lst_clean(t_vlst **head);
