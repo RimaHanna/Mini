@@ -2,6 +2,11 @@
 
 extern long long g_last_exit_status;
 
+/**
+ * Redirects input from the terminal until a specified delimiter is encountered.
+ *
+ * @param node - The statement node representing the command and arguments.
+ */
 void	redirect_input_until(t_statement *node)
 {
 	char	*buff;
@@ -21,6 +26,14 @@ void	redirect_input_until(t_statement *node)
 	free(buff);
 }
 
+/**
+ * Redirects input from a file to standard input.
+ * We have 2 while with the same condition in order to do an additional
+ * check and make sure that we have skipped all consecutive input redirection
+ * operators.
+ *
+ * @param node - The statement node representing the command and arguments.
+ */
 void	redirect_input(t_statement *node)
 {
 	int		in_file;
@@ -48,6 +61,11 @@ void	redirect_input(t_statement *node)
 	}
 }
 
+/**
+ * Redirects standard output to a file, creating or truncating it.
+ *
+ * @param node - The statement node representing the command and arguments.
+ */
 void	redirect_output(t_statement *node)
 {
 	close(STDOUT_FILENO);
@@ -67,6 +85,13 @@ void	redirect_output(t_statement *node)
 		open(node->next->argv[0], O_WRONLY | O_APPEND | O_CREAT, 0666);
 }
 
+/**
+ * Executes redirections for a statement node and determines whether to execute 
+ * a command or pipe to another process.
+ *
+ * @param node - The statement node representing the command and arguments.
+ * @param data - The shell data structure.
+ */
 void	exec_redirects(t_statement *node, t_data *data)
 {
 	t_statement	*temp;

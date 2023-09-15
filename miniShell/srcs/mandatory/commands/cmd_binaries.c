@@ -4,6 +4,14 @@ extern long long g_last_exit_status;
 
 #define NOT_FOUND NULL
 
+//UTILS
+bool	is_absolute_path(t_statement *statement)
+{
+	if (is_instr(statement->argv[0], '/'))
+		return (true);
+	return (false);
+}
+
 /**
  * Displays an error message indicating that a command was not found and 
  * prints the command name to the standard error.

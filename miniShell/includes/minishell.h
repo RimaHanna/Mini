@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #include "../libft/libft.h"
 
@@ -34,6 +35,8 @@
 # define UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
 # define RED_SYT_ERR "minishell: syntax error near unexpected token `newline'"
 # define ERROR_MESSAGE "minishell: no support for command-line arguments"
+# define PIPE_ERR "minishell: pipe() failed"
+# define FORK_ERR "minishell: fork() failed"
 
 // DEFINE CONSTANT
 # define QUOTES "\'\""
@@ -74,8 +77,7 @@ typedef struct s_vlst {
 	exit_all() (fork or pipe error) 
 	t_vlst: This structure represents a node in a linked list used to store 
 	environment variables.
- */
-
+*/
 typedef struct s_data
 {
 	char		**envp;
@@ -83,8 +85,9 @@ typedef struct s_data
 	t_statement	*head;
 }				t_data;
 
-//BINARIES_PIPES_REDIRECTS
+//COMMANDS
 	//cmd_binaries
+bool	is_absolute_path(t_statement *statement);
 void	cmd_not_found(char *cmd_name);
 char	**get_paths(t_vlst *envp_lst);
 char	*get_bin_path(char *cmd, char **paths);
@@ -93,7 +96,7 @@ void	cmd_binaries(t_statement *statement, t_data *data);
 
 	//exec_pipe
 void	left_side(t_statement *nd, t_data *data, int pdes[2]);
-void	right_side(t_statement *nd, t_data *data, int pdes[2]);
+void 	right_side(t_statement *nd, t_data *data, int pdes[2]);
 void	exec_pipe(t_statement *node, t_data *data);
 
 	//exec_redirects
@@ -101,10 +104,6 @@ void	redirect_input_until(t_statement *node);
 void	redirect_input(t_statement *node);
 void	redirect_output(t_statement *node);
 void	exec_redirects(t_statement *node, t_data *data);
-
-
-	//exec_redirects
-
 
 // EXECUTION
 
@@ -201,7 +200,6 @@ char		*ft_strncpy(char *dest, const char *src, size_t n);
 bool		is_digit(int c);
 bool		is_instr(const char *str, char chr);
 char		*join_free(char *s1, char *s2);
-
 
 // MAIN
 void		variable_lst_clean(t_vlst **head);

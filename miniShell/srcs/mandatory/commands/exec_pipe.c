@@ -2,15 +2,12 @@
 
 extern long long g_last_exit_status;
 
-# define PIPE_ERR "minishell: pipe() failed"
-# define FORK_ERR "minishell: fork() failed"
-
 /**
  * Redirects standard output to a pipe and executes a command.
  *
  * @param {t_statement*} nd - The statement to execute.
  * @param {t_data*} data - The shell data.
- * @param {int[2]} pdes - The pipe descriptor (input and output).
+ * @param {int} pdes[2] - The pipe descriptor (output).
  */
 void	left_side(t_statement *nd, t_data *data, int pdes[2])
 {
@@ -26,7 +23,7 @@ void	left_side(t_statement *nd, t_data *data, int pdes[2])
  *
  * @param {t_statement*} nd - The statement to execute.
  * @param {t_data*} data - The shell data.
- * @param {int[2]} pdes - The pipe descriptor (input and output).
+ * @param {int} pdes[2] - The pipe descriptor (input).
  */
 void	right_side(t_statement *nd, t_data *data, int pdes[2])
 {
@@ -39,7 +36,11 @@ void	right_side(t_statement *nd, t_data *data, int pdes[2])
 
 /**
  * Executes a command with input and output redirection using pipes.
+ *
  * Bytes written on pipedes[1] can be read on pipedes[0].
+ * The `pipe` system call creates an interprocess communication (IPC) channel.
+ * The pipe descriptors (file descriptors) for reading and writing are stored
+ * in `read_pipe` and `write_pipe`.
  *
  * @param {t_statement*} node - The statement to execute.
  * @param {t_data*} data - The shell data.

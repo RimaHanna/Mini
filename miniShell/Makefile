@@ -3,8 +3,7 @@ CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 LINK = -I./includes
 VPATH = srcs srcs/mandatory\
 		srcs/mandatory/parser srcs/mandatory/utils srcs/mandatory/call\
-		srcs/mandatory/setup srcs/mandatory/execution\
-		srcs/mandatory/binaries_pipes_redirects\
+		srcs/mandatory/setup srcs/mandatory/execution srcs/mandatory/commands\
 RM = rm -rf
 LIBFT = ./libft/libft.a
 
@@ -12,8 +11,8 @@ UTILS = ft_strncpy is_instr ft_llinttoarray join_free is_digit
 PARSER = remove_quotes syntax_validation parser clean_parsed expander\
 			string_trimming syntax_check expander_tool
 SETUP = init_and_setup_shell config_signal init_old_pwd
-EXECUTION = execute_lineofcommand call_cmd builtin
-BINARIES_PIPES_REDIRECTS = cmd_binaries exec_pipe exec_redirects
+EXECUTION = execute_lineofcommand builtin call_cmd
+COMMANDS = exec_pipe cmd_binaries exec_redirects
 
 NAME = minishell
 SRCS =	$(addsuffix .c, $(UTILS))\
@@ -21,7 +20,7 @@ SRCS =	$(addsuffix .c, $(UTILS))\
 		$(addsuffix .c, $(CALL))\
 		$(addsuffix .c, $(SETUP))\
 		$(addsuffix .c, $(EXECUTION))\
-		$(addsuffix.c, $(BINARIES_PIPES_REDIRECTS))\
+		$(addsuffix .c, $(COMMANDS))\
 		main.c
 		
 OBJ_DIR = obj
