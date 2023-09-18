@@ -60,36 +60,3 @@ bool	builtin(t_statement *s, t_data *data)
 		return (false);
 	return (true);
 }
-
-/**
- * @description Checks if a statement is a built-in
- * This function does not execute the statement
- * @param {t_statement *} s, pointer to statement
- * @param {t_data *} data, pointer to the entire command line
- * @returns {bool}
- * @author Rima
- * @date 20230909
- * @creation
-*/
-// Suite FILE: call_cmd.c
-bool	is_builtin(t_statement *s)
-{
-	if (streq(s->argv[0], "exit"))
-		return (true);
-	else if (streq(s->argv[0], "unset"))
-		return (true);
-	else if (streq(s->argv[0], "export"))
-		return (true);
-	else if (streq(s->argv[0], "cd"))
-		return (true);
-	else if (ft_strchr(s->argv[0], '=') && is_valid_id(s->argv[0]))
-		return (true);
-	else if (streq(s->argv[0], "echo"))
-		return (true);
-	else if (streq(s->argv[0], "pwd"))
-		return (true);
-	else if (streq(s->argv[0], "env"))
-		return (true);
-	else
-		return (false);
-}

@@ -95,7 +95,7 @@ void    shell_loop(int argc, char *argv[], char **env)
     char    *lineofcommand;
 	t_data	data;
     t_statement *statement_list;
-
+	
 	if (argv && argc > 1)
 		terminate_shell(NULL, ERROR_MESSAGE, EXIT_FAILURE);
 	init_shell(env, &data, &statement_list);

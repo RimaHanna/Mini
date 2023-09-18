@@ -1,28 +1,28 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 LINK = -I./includes
-VPATH = srcs srcs/mandatory\
-		srcs/mandatory/parser srcs/mandatory/utils srcs/mandatory/call\
-		srcs/mandatory/setup srcs/mandatory/execution srcs/mandatory/commands\
+VPATH = srcs srcs/commands srcs/execution srcs/parser srcs/setup srcs/utils\
+		srcs/commands/builtins
 RM = rm -rf
 LIBFT = ./libft/libft.a
 
-UTILS = ft_strncpy is_instr ft_llinttoarray join_free is_digit
-PARSER = remove_quotes syntax_validation parser clean_parsed expander\
-			string_trimming syntax_check expander_tool
-SETUP = init_and_setup_shell config_signal init_old_pwd
-EXECUTION = execute_lineofcommand builtin call_cmd
-COMMANDS = exec_pipe cmd_binaries exec_redirects
+COMMANDS = cmd_binaries exec_pipe exec_redirects
+BUILTINS = cd echo env exit export pwd unset
+EXECUTION = builtin call_cmd execute_lineofcommand
+PARSER = clean_parsed expander_tool expander parser remove_quotes\
+			string_trimming syntax_check syntax_validation
+SETUP = config_signal init_and_setup_shell init_old_pwd
+UTILS = ft_llinttoarray ft_strncpy is_digit is_instr join_free
 
 NAME = minishell
-SRCS =	$(addsuffix .c, $(UTILS))\
-		$(addsuffix .c, $(PARSER))\
-		$(addsuffix .c, $(CALL))\
-		$(addsuffix .c, $(SETUP))\
+SRCS =	$(addsuffix .c, $(COMMANDS))\
+		$(addsuffix .c, $(BUILTINS))\
 		$(addsuffix .c, $(EXECUTION))\
-		$(addsuffix .c, $(COMMANDS))\
+		$(addsuffix .c, $(PARSER))\
+		$(addsuffix .c, $(SETUP))\
+		$(addsuffix .c, $(UTILS))\
 		main.c
-		
+
 OBJ_DIR = obj
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 

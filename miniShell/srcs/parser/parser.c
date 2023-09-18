@@ -315,7 +315,7 @@ char **parse_input(char *input)
  *    - Arguments: ["'file.txt'"]
  *    - Operator: NONE
  */
-/*
+
 // PARSER 27 lines
 t_statement	*parser(char *input)
 {
@@ -345,8 +345,8 @@ t_statement	*parser(char *input)
 	free(parsed);
 	return (head);
 }
-*/
 
+/*
 // PARSER WITH PRINTF
 t_statement	*parser(char *input)
 {
@@ -396,3 +396,4 @@ printf("	next yes\n");
 	free(parsed);
 	return (head);
 }
+*/

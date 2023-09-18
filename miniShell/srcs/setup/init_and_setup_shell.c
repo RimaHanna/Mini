@@ -91,27 +91,20 @@ t_vlst	*init_envp_lst(char **envp)
 	char	**line;
 	size_t	i;
 
-	if (envp == NULL)
-        return (NULL);
-    // Initialize the head of the linked list
 	line = split_envp(envp[0]);
 	head = v_new_node(line[0], line[1], true);
 	free(line);
 	i = 1;
 	temp = head;
-    // Iterate through envp array to create and link nodes
 	while (envp[i])
 	{
-	    // Split the current environment variable into name and value
 		line = split_envp(envp[i]);
-	    // Create a new node for the linked list with the name, value, and is_exported flag
 		temp->next = v_new_node(line[0], line[1], true);
 		free(line);
-	    // Move to the next node in the linked list
 		temp = temp->next;
-		i += 1;
+		i++;
 	}
-//init_old_pwd(&head);
+	init_old_pwd(&head);
 	return (head);
 }
 

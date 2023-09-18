@@ -15,6 +15,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 
 #include "../libft/libft.h"
 
@@ -27,6 +28,7 @@
 
 
 // DEFINE GLOBAL_STATUS ERROR
+# define SUCCESS 0
 # define UNVALID_LINE 2
 
 // DEFINE SYNTAX MESSAGE
@@ -37,6 +39,18 @@
 # define ERROR_MESSAGE "minishell: no support for command-line arguments"
 # define PIPE_ERR "minishell: pipe() failed"
 # define FORK_ERR "minishell: fork() failed"
+# define OLDPWD_NOT_SET "minishell: cd: OLDPWD not set"
+# define PATH_MAX	4096
+# define EXIT_NON_NUMERIC_ARG "minishell: exit: numeric argument required" 
+# define EXIT_TOO_MANY_ARGS "minishell: exit: too many arguments"
+# define CD_TOO_MANY_ARGS "minishell: cd: too many arguments"
+
+
+static inline int	cd_too_many_args(void)
+{
+	ft_putendl_fd(CD_TOO_MANY_ARGS, STDERR_FILENO);
+	return (EXIT_FAILURE);
+}
 
 // DEFINE CONSTANT
 # define QUOTES "\'\""
@@ -86,6 +100,37 @@ typedef struct s_data
 }				t_data;
 
 //COMMANDS
+	//BUILTINS
+	//cd
+int		print_perror_msg(char *path);
+void	update_pwd(t_data *data);
+void	update_oldpwd(char *temp, t_data *data);
+int		cd_oldpwd(char *temp, t_data *data);
+int		cmd_cd(char *path, t_data *data);
+
+	//echo
+int		cmd_echo(t_statement *statement, bool has_n);
+
+	//env
+int	cmd_env(t_data *data);
+
+	//exit
+long long	ft_atoll(const char *str);
+bool	is_all_digits_or_signals(char *str);
+bool	fits_in_longlong(char *str);
+void	cmd_exit(t_statement *s, t_data *data);
+
+	//export
+bool	is_onid(char *str, char c);
+int		cmd_export(t_statement *statement, t_data *data);
+
+	//pwd
+int	cmd_pwd(void);
+
+	//unset
+int	unset_var(char *var_name, t_vlst **head);
+int	cmd_unset(t_statement *s, t_vlst **head);
+
 	//cmd_binaries
 bool	is_absolute_path(t_statement *statement);
 void	cmd_not_found(char *cmd_name);
@@ -110,7 +155,6 @@ void	exec_redirects(t_statement *node, t_data *data);
 	//buitin.c
 bool	is_valid_id(char *str);
 bool	builtin(t_statement *s, t_data *data);
-bool	is_builtin(t_statement *s);
 
 	//call_cmd.c
 int		call_cmd_unset(t_statement *s, t_data *data);
@@ -141,11 +185,11 @@ size_t	expand_variable(char *expanded_input_at_i, char *input,
 	size_t *i, t_data *data);
 
 	//expander.c
-size_t	exit_status_size(void);
-size_t	expand_exit_status(char *expanded_input_at_i, size_t *i);
-void	init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
-int		expanded_size(char *input, t_data *data);
-char	*expander(char *line, t_data *data);
+size_t		exit_status_size(void);
+size_t		expand_exit_status(char *expanded_input_at_i, size_t *i);
+void		init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
+int			expanded_size(char *input, t_data *data);
+char		*expander(char *line, t_data *data);
 
 	// parser.c
 size_t		get_argc(char **parsed);

@@ -8,12 +8,12 @@
  * @param head A pointer to the head of the environment variable linked list.
  */
 
-//void	init_old_pwd(t_vlst **head)
-//{
-//	char	*temp;
-//
-//	unset_var("OLDPWD", head);
-//	temp = ft_strjoin("OLDPWD=", getenv("HOME"));
-//	save_user_vars(temp, head, true);
-//	free(temp);
-//}
+void	init_old_pwd(t_vlst **head)
+{
+	char	*temp;
+
+	unset_var("OLDPWD", head);
+	temp = ft_strjoin("OLDPWD=", getenv("HOME"));
+	save_user_vars(temp, head, true);
+	free(temp);
+}

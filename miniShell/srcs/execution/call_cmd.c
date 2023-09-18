@@ -1,17 +1,11 @@
 #include "minishell.h"
 
-
-//cmd_exit: WITH RANIA
-
-//cmd_unset
 int	call_cmd_unset(t_statement *s, t_data *data)
 {
 	if (s->argc == 1)
 		return (EXIT_SUCCESS);
 	return (cmd_unset(s, &data->envp_lst));
 }
-
-//cmd_export: WITH RANIA
 
 int	call_cmd_cd(t_statement *s, t_data *data)
 {
@@ -21,11 +15,6 @@ int	call_cmd_cd(t_statement *s, t_data *data)
 		return (cmd_cd(s->argv[1], data));
 }
 
-//cd_too_many_args: WITH RANIA
-//cmd_cd: WITH RANIA
-
-
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 bool	get_exported_state(char *var_name, t_vlst **head)
 {
 	t_vlst	*temp;
@@ -80,9 +69,6 @@ int	save_user_vars(char *statement, t_vlst **head, bool to_export)
 	return (EXIT_SUCCESS);
 }
 
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7
-
-
 int	call_cmd_echo(t_statement *s)
 {
 	t_statement	*temp;
@@ -105,8 +91,3 @@ int	call_cmd_echo(t_statement *s)
 		ft_putchar_fd('\n', STDOUT_FILENO);
 	return (EXIT_SUCCESS);
 }
-// cmd_echo: WITH RANIA
-
-// cmd_pwd: WITH RANIA
-
-// cmd_env: WITH RANIA

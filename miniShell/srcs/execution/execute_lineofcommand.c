@@ -84,15 +84,10 @@ void	execute_lineofcommand(t_statement *statement_list, t_data *data)
 
 	if (parser_lstsize(statement_list) == 1)
 	{
-		if (is_builtin(statement_list))
-			builtin(statement_list, data);
-		else
+		if (!builtin(statement_list, data) && fork() == 0)
 		{
-			if(fork() == 0)
-			{
-				signal(SIGINT, child_signals);
-				exec_executables(statement_list, data);
-			}
+			signal(SIGINT, child_signals);
+			exec_executables(statement_list, data);
 		}
 	}
 	else if (fork() == 0)
