@@ -20,115 +20,6 @@
 	output redirection >, etc.) is associated with the command to 
 	indicate how commands are connected.
 */
-/*
-	get_argc, is_spaces, streq, get_operator, p_new_node, get_nb_statements, 
-	get_token_len, and parse_input. These functions are used to perform tasks 
-	like counting arguments, comparing strings, and parsing the input into 
-	tokens.
-*/
-
-/*
-// FUNCTION DON"T GET THE ARGC DEVISED BY STATEMENT
-size_t	get_argc(char **parsed)
-{
-	size_t	i;
-
-	i = 0;
-	while (parsed[i])
-		i++;
-//printf("l:41 get_argc number which is number of arguments = [%ld]\n", i);
-	return (i);
-}
-*/
-
-/**
- * Get the number of non-operator arguments in an array of strings.
- * 
- * This function iterates through an array of strings and counts the number of
- * elements that are not single-character operators. It returns the count.
- *
- * @param parsed - An array of strings to analyze.
- * @return The count of non-operator arguments in the array.
- */
-size_t	get_argc(char **parsed)
-{
-	size_t	i;
-
-	i = 0;
-	while ((parsed[i]) && ((ft_strlen(parsed[i]) != 1) 
-			|| !is_instr(OPERATORS, parsed[i][0])))
-		i++;
-	return i;
-}
-
-/**
- * Check if a character is a whitespace character.
- * 
- * This function determines whether a given character is a whitespace character,
- * including space, tab, newline, vertical tab, form feed, or carriage return.
- *
- * @param c - The character to check.
- * @return True if the character is a whitespace character, otherwise false.
- */
-bool	is_spaces(char c)
-{
-	if (c == '\t' || c == '\n' || c == '\v'
-		|| c == '\f' || c == '\r' || c == ' ')
-		return (true);
-	return (false);
-}
-
-/**
- * Checks if two strings are equal.
- *
- * @param {char*} str1 - The first string to compare.
- * @param {char*} str2 - The second string to compare.
- * @return {bool} True if the strings are equal, false otherwise.
- */
-bool	streq(char *str1, char *str2)
-{
-	size_t	i;
-
-	if ((str1 && !str2) || (!str1 && str2))
-		return (false);
-	i = 0;
-	while (str1[i] || str2[i])
-	{
-		if (str1[i] != str2[i])
-			return (false);
-		i += 1;
-	}
-	return (true);
-}
-
-/**
- * Get the operator type corresponding to a given operator string.
- *
- * @param {char} *operator - The operator string to be checked.
- *
- * @returns {t_operator} - The operator type determined from the string.
- */
-t_operator	get_operator(char *operator)
-{
-	t_operator	op;
-
-	if (!operator)
-		op = NONE;
-	else if (streq(operator, "|"))
-		op = PIPE_OP;
-	else if (streq(operator, ">>"))
-		op = APP_RDR_OP;
-	else if (streq(operator, ">"))
-		op = OUT_RDR_OP;
-	else if (streq(operator, "<<"))
-		op = MUL_RDR_OP;
-	else if (streq(operator, "<"))
-		op = INP_RDR_OP;
-	else
-		op = NONE;
-	free(operator);
-	return (op);
-}
 
 /**
  * @brief Create and initialize a new statement node.
@@ -168,40 +59,33 @@ t_statement	*p_new_node(int argc)
  */
 size_t get_nb_statements(char *input)
 {
-    size_t count;   // Stores the number of statements
-    bool flag;      // Indicates whether a statement is being processed
-    bool quotes;    // Indicates whether quotes are currently active
+    size_t count;
+    bool flag;
+    bool quotes;
 
-    count = 0;      // Initialize the count to zero
-    flag = false;   // Initialize the flag to false
-    quotes = false; // Initialize the quotes flag to false
-    while (*input) // Loop through each character in the input string
+    count = 0;
+    flag = false;
+    quotes = false;
+    while (*input)
     {
-        // If the current character is an operator, increment the count
         if (is_instr(OPERATORS, *input))
             count++;
 
-        // Check for double quotes and skip the next character if they match
         if (is_instr(QUOTES, *input) && *input == *(input + 1))
             input++;
-        // Toggle the quotes flag if a single quote is encountered
         else if (is_instr(QUOTES, *input))
             quotes = !quotes;
-
-        // If the current character is not a space, not an operator, not inside quotes,
-        // and a statement is not already being processed, mark the start of a new statement
         if (*input != ' ' && !is_instr(OPERATORS, *input) && !flag && !quotes)
         {
-            flag = true;    // Set the flag to indicate that a statement is being processed
-            count++;     // Increment the count for the new statement
+            flag = true;
+            count++;
         }
-        // If the current character is a space or an operator, reset the flag
         else if (*input == ' ' || is_instr(OPERATORS, *input))
             flag = false;
 
-        input++; // Move to the next character in the input string
+        input++;
     }
-    return (count); // Return the final count of statements
+    return (count);
 }
 
 /**
@@ -216,19 +100,18 @@ size_t get_nb_statements(char *input)
 size_t get_token_len(char *input_at_i)
 {
     size_t i;
-    char quotes;     // Character to track the opening quote type
+    char quotes;
 
     i = 0;
-    if (is_instr(OPERATORS, input_at_i[i])) // Check if the character is an operator
+    if (is_instr(OPERATORS, input_at_i[i]))
     {
-        if (input_at_i[i] == input_at_i[i + 1]) // If it's a double operator
-            return 2; // Return a length of 2
-        return 1; // If it's a single operator, return a length of 1
+        if (input_at_i[i] == input_at_i[i + 1])
+            return 2;
+        return 1;
     }
     while (input_at_i[i] && !is_spaces(input_at_i[i]) 
 		&& !is_instr(OPERATORS, input_at_i[i]))
     {
-        // Loop while the current character exists, is not a space, and is not an operator
         if (is_instr(QUOTES, input_at_i[i]))
         {
             quotes = input_at_i[i++];
@@ -239,7 +122,6 @@ size_t get_token_len(char *input_at_i)
     }
     return i;
 }
-
 
 /**
  * @function parse_input
@@ -253,40 +135,33 @@ size_t get_token_len(char *input_at_i)
  */
 char **parse_input(char *input)
 {
-    size_t i;       // Index for iterating through input
-    size_t k;       // Index for iterating through parsed array
-    size_t len;     // Length of the current token
-    size_t j;       // Index for copying characters within a token
-    char **parsed;  // Array to store parsed tokens
+    size_t i;
+    size_t k;
+    size_t len;
+    size_t j;
+    char **parsed;
 
     i = 0;
     k = 0;
-    // Allocate memory for the parsed array to hold the maximum possible number of tokens
     parsed = malloc((get_nb_statements(input) + 1) * sizeof(char *));
     while (input[i])
     {
-        // Get the length of the current token starting from input[i]
         len = get_token_len(&input[i]);
-        // If the length is 0, move to the next character in input
         if (!len)
         {
             i++;
             continue;
         }
-        // Allocate memory for the current token in the parsed array
         parsed[k] = malloc((len + 1) * sizeof(char));
-        j = 0; // Initialize index for copying characters within a token
+        j = 0;
         while (input[i] && j < len)
         {
-            // Copy the character from input to the current token in the parsed array
             parsed[k][j++] = input[i++];
         }
-        // Null-terminate the token in the parsed array
         parsed[k++][j] = '\0';
     }
-    // Null-terminate the parsed array
     parsed[k] = NULL;
-    return (parsed); // Return the array of parsed tokens
+    return (parsed);
 }
 
 /**
@@ -315,8 +190,6 @@ char **parse_input(char *input)
  *    - Arguments: ["'file.txt'"]
  *    - Operator: NONE
  */
-
-// PARSER 27 lines
 t_statement	*parser(char *input)
 {
 	char		**parsed;

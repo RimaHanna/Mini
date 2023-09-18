@@ -46,3 +46,10 @@ int	cmd_unset(t_statement *s, t_vlst **head)
 	}
 	return (EXIT_SUCCESS);
 }
+
+int	call_cmd_unset(t_statement *s, t_data *data)
+{
+	if (s->argc == 1)
+		return (EXIT_SUCCESS);
+	return (cmd_unset(s, &data->envp_lst));
+}

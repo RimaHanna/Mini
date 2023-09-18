@@ -10,9 +10,10 @@ COMMANDS = cmd_binaries exec_pipe exec_redirects
 BUILTINS = cd echo env exit export pwd unset
 EXECUTION = builtin call_cmd execute_lineofcommand
 PARSER = clean_parsed expander_tool expander parser remove_quotes\
-			string_trimming syntax_check syntax_validation
+			string_trimming syntax_check syntax_validation parser_tool
 SETUP = config_signal init_and_setup_shell init_old_pwd
-UTILS = ft_llinttoarray ft_strncpy is_digit is_instr join_free
+UTILS = ft_llinttoarray ft_strncpy is_digit is_instr join_free lists_manage\
+			is_absolute_path
 
 NAME = minishell
 SRCS =	$(addsuffix .c, $(COMMANDS))\

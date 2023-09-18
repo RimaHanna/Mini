@@ -9,7 +9,7 @@
  * @param n The long long integer to calculate the number of digits for.
  * @return The number of digits in 'n'.
  */
-long long	ft_digits(long long n)
+static long long	ft_digits(long long n)
 {
 	long long	digits;
 

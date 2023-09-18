@@ -1,10 +1,9 @@
 #include "minishell.h"
 
-int	call_cmd_unset(t_statement *s, t_data *data)
+static inline int	cd_too_many_args(void)
 {
-	if (s->argc == 1)
-		return (EXIT_SUCCESS);
-	return (cmd_unset(s, &data->envp_lst));
+	ft_putendl_fd(CD_TOO_MANY_ARGS, STDERR_FILENO);
+	return (EXIT_FAILURE);
 }
 
 int	call_cmd_cd(t_statement *s, t_data *data)
@@ -27,33 +26,6 @@ bool	get_exported_state(char *var_name, t_vlst **head)
 		temp = temp->next;
 	}
 	return (false);
-}
-
-t_vlst	*v_lstlast(t_vlst *node)
-{
-	while (node)
-	{
-		if (!node->next)
-			break ;
-		node = node->next;
-	}
-	return (node);
-}
-
-void	v_lstadd_back(t_vlst **head, t_vlst *new)
-{
-	t_vlst	*temp;
-
-	if (head)
-	{
-		if (!*head)
-			*head = new;
-		else
-		{
-			temp = v_lstlast(*(head));
-			temp->next = new;
-		}
-	}
 }
 
 int	save_user_vars(char *statement, t_vlst **head, bool to_export)

@@ -36,7 +36,6 @@ bool	is_valid_id(char *str)
  * @param {t_data *} data, pointer to the entire command line
  * @returns {bool}
 */
-// Suite FILE: call_cmd.c
 bool	builtin(t_statement *s, t_data *data)
 {
 	if (streq(s->argv[0], "exit"))

@@ -3,35 +3,6 @@
 long long g_last_exit_status = 0;
 
 /**
- * @brief Clean the variable list.
- * 
- * This function is responsible for cleaning up a linked list of variables.
- * It iterates through the list and frees the memory associated with each node.
- * Finally, it sets the head of the list to NULL.
- * 
- * @param head - A pointer to a pointer to the head of the variable list.
- * @return void
- */
-void	variable_lst_clean(t_vlst **head)
-{
-	t_vlst	*temp;
-	t_vlst	*next_node;
-
-	if (!head)
-		return ;
-	temp = *head;
-	while (temp != NULL)
-	{
-		next_node = temp->next;
-		free(temp->var_name);
-		free(temp->var_value);
-		free(temp);
-		temp = next_node;
-	}
-	*head = NULL;
-}
-
-/**
  * @brief Clears shell history, and cleans up environment and statement list.
  *
  * @param data A pointer to the shell data structure.

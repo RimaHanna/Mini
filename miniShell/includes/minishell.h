@@ -32,6 +32,7 @@
 # define UNVALID_LINE 2
 
 // DEFINE SYNTAX MESSAGE
+# define NOT_FOUND NULL
 # define UNCLOSED_QUOTE "minishell: unclosed quote"
 # define SYNTAX_ERROR "minishell: syntax error"
 # define UNEXPECTED_TOKEN "minishell: syntax error near unexpected token "
@@ -45,12 +46,6 @@
 # define EXIT_TOO_MANY_ARGS "minishell: exit: too many arguments"
 # define CD_TOO_MANY_ARGS "minishell: cd: too many arguments"
 
-
-static inline int	cd_too_many_args(void)
-{
-	ft_putendl_fd(CD_TOO_MANY_ARGS, STDERR_FILENO);
-	return (EXIT_FAILURE);
-}
 
 // DEFINE CONSTANT
 # define QUOTES "\'\""
@@ -102,100 +97,100 @@ typedef struct s_data
 //COMMANDS
 	//BUILTINS
 	//cd
-int		print_perror_msg(char *path);
-void	update_pwd(t_data *data);
-void	update_oldpwd(char *temp, t_data *data);
-int		cd_oldpwd(char *temp, t_data *data);
-int		cmd_cd(char *path, t_data *data);
+int			print_perror_msg(char *path);
+void		update_pwd(t_data *data);
+void		update_oldpwd(char *temp, t_data *data);
+int			cd_oldpwd(char *temp, t_data *data);
+int			cmd_cd(char *path, t_data *data);
 
 	//echo
-int		cmd_echo(t_statement *statement, bool has_n);
+int			cmd_echo(t_statement *statement, bool has_n);
 
 	//env
-int	cmd_env(t_data *data);
+int			cmd_env(t_data *data);
 
 	//exit
 long long	ft_atoll(const char *str);
-bool	is_all_digits_or_signals(char *str);
-bool	fits_in_longlong(char *str);
-void	cmd_exit(t_statement *s, t_data *data);
+bool		is_all_digits_or_signals(char *str);
+bool		fits_in_longlong(char *str);
+void		cmd_exit(t_statement *s, t_data *data);
 
 	//export
-bool	is_onid(char *str, char c);
-int		cmd_export(t_statement *statement, t_data *data);
+bool		is_onid(char *str, char c);
+int			cmd_export(t_statement *statement, t_data *data);
 
 	//pwd
-int	cmd_pwd(void);
+int			cmd_pwd(void);
 
 	//unset
-int	unset_var(char *var_name, t_vlst **head);
-int	cmd_unset(t_statement *s, t_vlst **head);
+int			unset_var(char *var_name, t_vlst **head);
+int			cmd_unset(t_statement *s, t_vlst **head);
+int			call_cmd_unset(t_statement *s, t_data *data);
 
 	//cmd_binaries
-bool	is_absolute_path(t_statement *statement);
-void	cmd_not_found(char *cmd_name);
-char	**get_paths(t_vlst *envp_lst);
-char	*get_bin_path(char *cmd, char **paths);
-void	exit_and_free_args(char **paths, char *cmd, int exit_status);
-void	cmd_binaries(t_statement *statement, t_data *data);
+void		cmd_not_found(char *cmd_name);
+char		**get_paths(t_vlst *envp_lst);
+char		*get_bin_path(char *cmd, char **paths);
+void		exit_and_free_args(char **paths, char *cmd, int exit_status);
+void		cmd_binaries(t_statement *statement, t_data *data);
 
 	//exec_pipe
-void	left_side(t_statement *nd, t_data *data, int pdes[2]);
-void 	right_side(t_statement *nd, t_data *data, int pdes[2]);
-void	exec_pipe(t_statement *node, t_data *data);
+void		left_side(t_statement *nd, t_data *data, int pdes[2]);
+void	 	right_side(t_statement *nd, t_data *data, int pdes[2]);
+void		exec_pipe(t_statement *node, t_data *data);
 
 	//exec_redirects
-void	redirect_input_until(t_statement *node);
-void	redirect_input(t_statement *node);
-void	redirect_output(t_statement *node);
-void	exec_redirects(t_statement *node, t_data *data);
+void		redirect_input_until(t_statement *node);
+void		redirect_input(t_statement *node);
+void		redirect_output(t_statement *node);
+void		exec_redirects(t_statement *node, t_data *data);
 
 // EXECUTION
 
 	//buitin.c
-bool	is_valid_id(char *str);
-bool	builtin(t_statement *s, t_data *data);
+bool		is_valid_id(char *str);
+bool		builtin(t_statement *s, t_data *data);
 
 	//call_cmd.c
-int		call_cmd_unset(t_statement *s, t_data *data);
-int		call_cmd_cd(t_statement *s, t_data *data);
-bool	get_exported_state(char *var_name, t_vlst **head);
-t_vlst	*v_lstlast(t_vlst *node);
-void	v_lstadd_back(t_vlst **head, t_vlst *new);
-int		save_user_vars(char *statement, t_vlst **head, bool to_export);
-int		call_cmd_echo(t_statement *s);
+int			call_cmd_cd(t_statement *s, t_data *data);
+bool		get_exported_state(char *var_name, t_vlst **head);
+int			save_user_vars(char *statement, t_vlst **head, bool to_export);
+int			call_cmd_echo(t_statement *s);
 
 	//ececute_lineofcommand.c
-void	exec_cmd(t_statement *current_node, t_data *data);
-void	exec_executables(t_statement *node, t_data *data);
-void	execute_lineofcommand(t_statement *statement_list, t_data *data);
+void		exec_cmd(t_statement *current_node, t_data *data);
+void		exec_executables(t_statement *node, t_data *data);
+void		execute_lineofcommand(t_statement *statement_list, t_data *data);
 
 // PARSER
 	// clean_parsed.c
-void	free_argvs(char **argvs);
-void	parse_lst_clean(t_statement **head);
-void	clean_parsed(t_statement **statement_list, t_data *data);
+void		free_argvs(char **argvs);
+void		parse_lst_clean(t_statement **head);
+void		clean_parsed(t_statement **statement_list, t_data *data);
 
 	// expander_tool.c
-bool	single_dollar(char *input_at_i);
-char	*get_varvalue_fromvlst(char *var_name, t_data *data);
-char	*get_fromvlst(char *var_name, t_vlst **head);
-size_t	expand_size(char *input_at_i, size_t *i, t_data *data);
-size_t	expand_variable(char *expanded_input_at_i, char *input,
+bool		single_dollar(char *input_at_i);
+char		*get_varvalue_fromvlst(char *var_name, t_data *data);
+char		*get_fromvlst(char *var_name, t_vlst **head);
+size_t		expand_size(char *input_at_i, size_t *i, t_data *data);
+size_t		expand_variable(char *expanded_input_at_i, char *input,
 	size_t *i, t_data *data);
 
 	//expander.c
 size_t		exit_status_size(void);
 size_t		expand_exit_status(char *expanded_input_at_i, size_t *i);
-void		init_vars(size_t *i, size_t *size, bool *in_quotes, bool *in_dquotes);
+void		init_vars(size_t *i, size_t *size, bool *in_quotes,
+	bool *in_dquotes);
 int			expanded_size(char *input, t_data *data);
 char		*expander(char *line, t_data *data);
 
-	// parser.c
+	//parser_tool.c
 size_t		get_argc(char **parsed);
 bool		is_spaces(char c);
 bool		streq(char *str1, char *str2);
 t_operator	get_operator(char *operator);
+
+	// parser.c
 t_statement	*p_new_node(int argc);
 size_t		get_nb_statements(char *input);
 size_t		get_token_len(char *input_at_i);
@@ -238,15 +233,18 @@ void		init_shell(char **envp, t_data *data, t_statement **statement_list);
 void		init_old_pwd(t_vlst **head);
 
 // UTILS
-long long	ft_digits(long long n);
 char		*ft_llinttoarray(long long n);
 char		*ft_strncpy(char *dest, const char *src, size_t n);
+bool		is_absolute_path(t_statement *statement);
 bool		is_digit(int c);
 bool		is_instr(const char *str, char chr);
 char		*join_free(char *s1, char *s2);
+//lists_manage.c
+void		variable_lst_clean(t_vlst **head);
+t_vlst		*v_lstlast(t_vlst *node);
+void		v_lstadd_back(t_vlst **head, t_vlst *new);
 
 // MAIN
-void		variable_lst_clean(t_vlst **head);
 void		destroy(t_data *data);
 void		exit_shell(int exit_status, t_data *data);
 void		terminate_shell(t_data *data, char *msg, int exit_status);
